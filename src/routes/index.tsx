@@ -13,7 +13,7 @@ const queryMutationRequestMiddleware = createMiddleware({ type: "function" })
   })
   .server(async ({ next, context }) => {
     // read which queries to revalidate, that were sent from the client
-    console.log("Queries to revalidate", context.queriesToRevalidate);
+    console.log("Queries to revalidate 2", context.queriesToRevalidate);
 
     const updatedQueries: Record<string, any> = {};
 
@@ -117,7 +117,7 @@ const reactQueryClientMiddlewareClient = createMiddleware({ type: "function" })
 
 function App() {
   function runServerFn() {
-    callServerFn().then((result) => {
+    callServerFn2().then((result) => {
       console.log({ result });
     });
   }
