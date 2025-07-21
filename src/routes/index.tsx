@@ -1,4 +1,4 @@
-import { callServerFn2 } from "@/util/query-middleware";
+//import { callServerFn2 } from "@/util/query-middleware";
 import { createFileRoute } from "@tanstack/react-router";
 
 //--------------------------------
@@ -72,9 +72,9 @@ export const Route = createFileRoute("/")({
 
 function App() {
   function runServerFn() {
-    callServerFn2().then((result) => {
-      console.log({ result });
-    });
+    //   callServerFn2().then((result) => {
+    //     console.log({ result });
+    // });
   }
 
   return (
