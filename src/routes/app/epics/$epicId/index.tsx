@@ -36,7 +36,7 @@ function EpicIndex() {
     refetch();
   }, [epic]);
 
-  console.log({ isLoading, isFetching, isRefetching });
+  console.log({ isLoading, isFetching, isRefetching, epic });
   return epic ? (
     <div className="flex flex-col gap-3 p-3">
       <Link to="/app/epics" search={{ page: 1 }}>

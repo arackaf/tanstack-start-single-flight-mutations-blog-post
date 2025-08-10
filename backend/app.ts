@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import bodyParser from "body-parser";
 import { setup } from "./db-setup";
@@ -11,8 +12,16 @@ const jsonParser = bodyParser.json();
 setup();
 
 const app = express();
-app.use(cookieParser());
 
+// Configure CORS
+app.use(
+  cors({
+    origin: true, // Allow all origins in development
+    credentials: true // Allow cookies to be sent
+  })
+);
+
+app.use(cookieParser());
 app.use(express.json());
 app.use(jsonParser);
 
@@ -21,13 +30,15 @@ app.get("/", function (_, res) {
 });
 
 app.get("/api/tasks/overview", function (_, res) {
+  console.log("in tasks overview");
   query(`
     SELECT u.name user, count(*) count
     FROM tasks t
     INNER JOIN users u
     ON t.userId = u.id
     GROUP BY u.id
-  `).then((tasks) => {
+  `).then(tasks => {
+    console.log("tasks", tasks);
     res.json(tasks);
   });
 });
@@ -41,7 +52,7 @@ app.get("/api/tasks", async function (_, res) {
     WHERE userId = ?
   `,
     [userId]
-  ).then((tasks) => {
+  ).then(tasks => {
     res.json(tasks);
   });
 });
@@ -55,7 +66,7 @@ app.get("/api/tasks/:id", async function (req, res) {
   `,
     [req.params.id]
   )
-    .then((tasks) => new Promise((res) => setTimeout(() => res(tasks), 750)))
+    .then(tasks => new Promise(res => setTimeout(() => res(tasks), 750)))
     .then((tasks: any) => {
       res.json(tasks[0]);
     });
@@ -119,7 +130,7 @@ app.get("/api/epics/:id", async function (req, res) {
   `,
     [parseInt(req.params.id)]
   )
-    .then((epics) => new Promise((res) => setTimeout(() => res(epics), 750)))
+    .then(epics => new Promise(res => setTimeout(() => res(epics), 750)))
     .then((epics: any) => {
       res.json({ ...epics[0], time: Date.now() });
     });

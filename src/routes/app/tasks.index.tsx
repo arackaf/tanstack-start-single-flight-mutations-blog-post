@@ -6,8 +6,11 @@ export const Route = createFileRoute("/app/tasks/")({
   component: Index,
   loader: async ({ context }) => {
     const now = +new Date();
+    console.log("A");
     console.log(`/tasks/index path loader. Loading tasks at + ${now - context.timestarted}ms since start`);
+    console.log("B");
     const tasks = await getTasksList();
+    console.log("C", tasks);
     return { tasks };
   },
   gcTime: 1000 * 60 * 5,
@@ -22,6 +25,8 @@ function Index() {
 
   const matchData = Route.useMatch();
   const { isFetching } = matchData;
+
+  console.log("D", tasks);
 
   return (
     <div className="p-2">

@@ -1,7 +1,7 @@
 export const users = [
   { id: 1, name: "Adam" },
   { id: 2, name: "Chris" },
-  { id: 3, name: "Marc" },
+  { id: 3, name: "Marc" }
 ];
 
 export const epics = [
@@ -16,7 +16,7 @@ export const epics = [
   { id: 9, title: "Dummy Epic 5" },
   { id: 10, title: "Dummy Epic 6" },
   { id: 11, title: "Dummy Epic 7" },
-  { id: 12, title: "Dummy Epic 8" },
+  { id: 12, title: "Dummy Epic 8" }
 ];
 
 export const milestones = [
@@ -30,7 +30,7 @@ export const milestones = [
   { id: 8, epicId: 3, name: "Auth accounts moved over" },
   { id: 9, epicId: 4, name: "Set up Java sdk" },
   { id: 10, epicId: 4, name: "Learn basics" },
-  { id: 11, epicId: 4, name: "Learn async" },
+  { id: 11, epicId: 4, name: "Learn async" }
 ];
 
 export const tasks = [
@@ -65,5 +65,5 @@ export const tasks = [
   { name: "Review classic Java", epicId: 4, userId: 1 },
   { name: "Asynchrony with Futures", epicId: 4, userId: 1 },
   { name: "Data processing with Streams", epicId: 4, userId: 1 },
-  { name: "Data transfer with Records", epicId: 4, userId: 1 },
+  { name: "Data transfer with Records", epicId: 4, userId: 1 }
 ];
