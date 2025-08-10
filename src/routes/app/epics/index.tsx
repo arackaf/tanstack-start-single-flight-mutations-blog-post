@@ -11,7 +11,7 @@ type SearchParams = {
 export const Route = createFileRoute("/app/epics/")({
   validateSearch(search: Record<string, unknown>): SearchParams {
     return {
-      page: parseInt(search.page as string, 10) || 1,
+      page: parseInt(search.page as string, 10) || 1
     };
   },
   loaderDeps: ({ search }) => {
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/app/epics/")({
   component: Index,
   pendingComponent: () => <div className="p-3 text-xl">Loading epics ...</div>,
   pendingMinMs: 200,
-  pendingMs: 10,
+  pendingMs: 10
 });
 
 function Index() {
@@ -44,7 +44,9 @@ function Index() {
       <h3 className="text-2xl">Epics page!</h3>
       <h3 className="text-lg">There are {epicsCount.count} epics</h3>
       <div>
-        <div className={`inline-grid gap-x-8 gap-y-4 grid-cols-[auto_auto_auto] items-center p-3 ${loading ? "opacity-40" : ""}`}>
+        <div
+          className={`inline-grid gap-x-8 gap-y-4 grid-cols-[auto_auto_auto] items-center p-3 ${loading ? "opacity-40" : ""}`}
+        >
           {epicsData.map((e, idx) => (
             <Fragment key={idx}>
               <div>{e.name}</div>
@@ -57,10 +59,20 @@ function Index() {
             </Fragment>
           ))}
           <div className="flex gap-3">
-            <Link to="/app/epics" search={{ page: page - 1 }} className="border p-1 rounded" disabled={loading || page === 1}>
+            <Link
+              to="/app/epics"
+              search={{ page: page - 1 }}
+              className="border p-1 rounded"
+              disabled={loading || page === 1}
+            >
               Prev
             </Link>
-            <Link to="/app/epics" search={{ page: page + 1 }} className="border p-1 rounded" disabled={loading || !epicsData.length}>
+            <Link
+              to="/app/epics"
+              search={{ page: page + 1 }}
+              className="border p-1 rounded"
+              disabled={loading || !epicsData.length}
+            >
               Next
             </Link>
           </div>

@@ -14,7 +14,7 @@ export const saveEpic = createServerFn({ method: "POST" })
 
     await postToApi("api/epic/update", {
       id: data.id,
-      name: data.newName,
+      name: data.newName
     });
 
     //throw redirect({ to: "/app/epics", search: { page: 1 } });
@@ -24,12 +24,12 @@ export const Route = createFileRoute("/app/epics/$epicId/edit")({
   component: EditEpic,
   context({ context, params }) {
     return {
-      currentEpicOptions: epicQueryOptions(context.timestarted, params.epicId),
+      currentEpicOptions: epicQueryOptions(context.timestarted, params.epicId)
     };
   },
   loader({ context }) {
     context.queryClient.prefetchQuery(context.currentEpicOptions);
-  },
+  }
 });
 
 function EditEpic() {
@@ -52,8 +52,8 @@ function EditEpic() {
     const result: any = await runSave({
       data: {
         id: epic.id,
-        newName: newName.current!.value,
-      },
+        newName: newName.current!.value
+      }
     });
 
     console.log({ result });

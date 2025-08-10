@@ -21,7 +21,7 @@ export const Route = createFileRoute("/app/tasks/$taskId/")({
   errorComponent: ({}) => <div className="m-4 p-4 text-xl text-red-500">Error loading task :(</div>,
   pendingComponent: () => <div className="m-4 p-4 text-xl">Loading task ...</div>,
   pendingMs: 150,
-  pendingMinMs: 200,
+  pendingMinMs: 200
 });
 
 function TaskView() {

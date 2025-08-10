@@ -18,7 +18,7 @@ export const Route = createFileRoute("/app/tasks_/$taskId/edit")({
   gcTime: 1000 * 60 * 5,
   pendingComponent: () => <div className="m-4 p-4 text-xl">Loading task ...</div>,
   pendingMs: 150,
-  pendingMinMs: 200,
+  pendingMinMs: 200
 });
 
 function TaskEdit() {
@@ -31,7 +31,7 @@ function TaskEdit() {
   const save = async () => {
     await postToApi("api/task/update", {
       id: task.id,
-      title: newTitleEl.current!.value,
+      title: newTitleEl.current!.value
     });
 
     router.invalidate({
@@ -41,7 +41,7 @@ function TaskEdit() {
           (route.routeId === "/app/tasks/$taskId/" && route.params.taskId === taskId) ||
           (route.routeId === "/app/tasks_/$taskId/edit" && route.params.taskId === taskId)
         );
-      },
+      }
     });
 
     navigate({ to: "/app/tasks" });

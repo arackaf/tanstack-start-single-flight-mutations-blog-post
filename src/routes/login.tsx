@@ -24,5 +24,5 @@ export const Route = createFileRoute("/login")({
         </button>
       </div>
     );
-  },
+  }
 });

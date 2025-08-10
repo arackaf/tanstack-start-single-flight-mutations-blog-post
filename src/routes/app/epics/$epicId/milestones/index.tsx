@@ -17,10 +17,10 @@ export const Route = createFileRoute("/app/epics/$epicId/milestones/")({
   },
   validateSearch(search: Record<string, unknown>): SearchParams {
     return {
-      search: (search.search as string) || "",
+      search: (search.search as string) || ""
     };
   },
-  component: Milestones,
+  component: Milestones
 });
 
 function Milestones() {

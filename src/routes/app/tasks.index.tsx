@@ -17,7 +17,7 @@ export const Route = createFileRoute("/app/tasks/")({
   staleTime: 1000 * 60 * 2,
   pendingComponent: () => <div className="m-4 p-4 text-xl">Loading tasks list...</div>,
   pendingMs: 150,
-  pendingMinMs: 200,
+  pendingMinMs: 200
 });
 
 function Index() {

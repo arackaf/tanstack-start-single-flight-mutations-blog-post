@@ -27,5 +27,5 @@ export const Route = createFileRoute("/app")({
         </div>
       </div>
     );
-  },
+  }
 });

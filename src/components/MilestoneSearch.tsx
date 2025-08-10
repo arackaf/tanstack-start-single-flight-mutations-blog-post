@@ -11,7 +11,7 @@ export const MilestoneSearch: FC<{}> = () => {
       to: ".",
       search: () => {
         return { search: searchRef.current.value };
-      },
+      }
     });
   };
 

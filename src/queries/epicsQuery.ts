@@ -17,7 +17,7 @@ export const epicsQueryOptions = (timestarted: number, page: number) => {
       return epics;
     },
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5
   });
 };
 
@@ -32,6 +32,6 @@ export const epicsCountQueryOptions = (timestarted: number) => {
       return result[0];
     },
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5
   });
 };

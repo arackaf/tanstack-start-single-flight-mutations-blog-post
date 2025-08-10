@@ -9,7 +9,7 @@ export const Route = createFileRoute("/app/epics")({
     const queryClient = context.queryClient;
     queryClient.prefetchQuery(epicsSummaryQueryOptions(context.timestarted));
   },
-  pendingComponent: () => <div className="p-3 text-xl">Loading epics route ...</div>,
+  pendingComponent: () => <div className="p-3 text-xl">Loading epics route ...</div>
 });
 
 function EpicLayout() {

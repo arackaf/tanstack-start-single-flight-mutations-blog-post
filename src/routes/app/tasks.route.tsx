@@ -17,7 +17,7 @@ export const Route = createFileRoute("/app/tasks")({
   },
   errorComponent: () => <h1>Yooo</h1>,
   gcTime: 1000 * 60 * 5,
-  staleTime: 1000 * 60 * 2,
+  staleTime: 1000 * 60 * 2
 });
 
 function TasksLayout() {
