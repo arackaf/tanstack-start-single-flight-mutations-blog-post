@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable } from "@/drizzle/schema";
-import { count, eq, sql } from "drizzle-orm";
+import { asc, count, eq, sql } from "drizzle-orm";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .validator((page: number) => page)
@@ -39,7 +39,7 @@ export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async 
     .select({ id: epicsTable.id, name: epicsTable.name, count: subQuery.count })
     .from(epicsTable)
     .innerJoin(subQuery, eq(epicsTable.id, subQuery.epicId))
-    .orderBy(sql`${subQuery.count} ASC`);
+    .orderBy(asc(subQuery.count));
 
   const results = await query;
   return results;
