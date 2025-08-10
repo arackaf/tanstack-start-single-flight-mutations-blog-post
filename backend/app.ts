@@ -43,35 +43,6 @@ app.get("/api/tasks/overview", function (_, res) {
   });
 });
 
-app.get("/api/tasks", async function (_, res) {
-  const userId = 1;
-  query(
-    `
-    SELECT * 
-    FROM tasks t
-    WHERE userId = ?
-  `,
-    [userId]
-  ).then(tasks => {
-    res.json(tasks);
-  });
-});
-
-app.get("/api/tasks/:id", async function (req, res) {
-  query<Task[]>(
-    `
-    SELECT * 
-    FROM tasks t
-    WHERE id = ?
-  `,
-    [req.params.id]
-  )
-    .then(tasks => new Promise(res => setTimeout(() => res(tasks), 750)))
-    .then((tasks: any) => {
-      res.json(tasks[0]);
-    });
-});
-
 app.post("/api/task/update", jsonParser, function (req, res) {
   const { id, title } = req.body;
   command(

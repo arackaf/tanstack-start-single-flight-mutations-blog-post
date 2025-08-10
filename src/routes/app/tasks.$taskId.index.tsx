@@ -1,6 +1,6 @@
 import { use } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getTask } from "../../serverFnQueries/tasks";
+import { getTask } from "../../serverFn/tasks";
 
 export const Route = createFileRoute("/app/tasks/$taskId/")({
   loader: async ({ params, context }) => {

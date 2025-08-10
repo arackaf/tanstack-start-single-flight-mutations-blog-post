@@ -1,20 +1,10 @@
 import { Fragment } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getTasksList } from "../../serverFnQueries/tasks";
-import { db } from "@/drizzle/db";
-import { createServerFn } from "@tanstack/react-start";
-import { tasks as tasksTable } from "@/drizzle/schema";
-
-const fetchTasks = createServerFn({ method: "GET" }).handler(async () => {
-  const tasks = await db.select().from(tasksTable);
-  console.log("tasks:::", tasks);
-  return tasks;
-});
+import { getTasksList } from "../../serverFn/tasks";
 
 export const Route = createFileRoute("/app/tasks/")({
   component: Index,
   loader: async ({ context }) => {
-    fetchTasks();
     const now = +new Date();
     console.log(`/tasks/index path loader. Loading tasks at + ${now - context.timestarted}ms since start`);
     const tasks = await getTasksList();
