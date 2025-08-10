@@ -20,7 +20,7 @@ export const Route = createFileRoute("/app/epics/")({
   async loader({ context, deps }) {
     const queryClient = context.queryClient;
 
-    queryClient.ensureQueryData(epicsQueryOptions(context.timestarted, deps.page));
+    queryClient.ensureQueryData(epicsQueryOptions(deps.page));
     queryClient.ensureQueryData(epicsCountQueryOptions(context.timestarted));
   },
   component: Index,
@@ -36,7 +36,7 @@ function Index() {
   const deferredPage = useDeferredValue(page);
   const loading = page !== deferredPage;
 
-  const { data: epicsData } = useSuspenseQuery(epicsQueryOptions(context.timestarted, deferredPage));
+  const { data: epicsData } = useSuspenseQuery(epicsQueryOptions(deferredPage));
   const { data: epicsCount } = useSuspenseQuery(epicsCountQueryOptions(context.timestarted));
 
   return (

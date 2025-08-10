@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { Task } from "../../types";
 import { db } from "@/drizzle/db";
 import { tasks as tasksTable } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";

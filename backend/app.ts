@@ -79,13 +79,6 @@ app.get("/api/epics/overview", async function (_, res) {
   });
 });
 
-app.get("/api/epics", function (req, res) {
-  const page = parseInt(req.query.page as string);
-  query("SELECT * FROM epics LIMIT ?, 4", [(page - 1) * 4]).then((result: any) => {
-    res.json(result);
-  });
-});
-
 app.get("/api/epics/count", function (_, res) {
   query("SELECT COUNT(*) count FROM epics").then((result: any) => {
     res.json(result);

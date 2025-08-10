@@ -58,7 +58,7 @@ function EditEpic() {
 
     console.log({ result });
 
-    //const listOptions = epicsQueryOptions(0, 1);
+    //const listOptions = epicsQueryOptions(1);
 
     //queryClient.invalidateQueries({ queryKey: ["epics"], refetchType: "none" });
     // queryClient.invalidateQueries({ queryKey: ["epic"], refetchType: "none" });

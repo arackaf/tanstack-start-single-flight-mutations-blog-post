@@ -1,3 +1,4 @@
+import { getEpicsList } from "@/serverFn/epics";
 import { fetchJson } from "../../backend/fetchUtils";
 import { queryOptions } from "../lib/queryOptions";
 
@@ -6,14 +7,11 @@ export type Epic = {
   name: string;
 };
 
-export const epicsQueryOptions = (timestarted: number, page: number) => {
+export const epicsQueryOptions = (page: number) => {
   return queryOptions({
     queryKey: ["epics", "list", page],
     queryFn: async () => {
-      const timeDifference = +new Date() - timestarted;
-
-      console.log("Loading api/epics data at", timeDifference);
-      const epics = await fetchJson<Epic[]>("api/epics?page=" + page);
+      const epics = await getEpicsList({ data: page });
       return epics;
     },
     staleTime: 1000 * 60 * 5,
