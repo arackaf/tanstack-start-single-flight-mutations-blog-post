@@ -1,4 +1,4 @@
-import { getEpicsList } from "@/serverFn/epics";
+import { getEpicsCount, getEpicsList } from "@/serverFn/epics";
 import { fetchJson } from "../../backend/fetchUtils";
 import { queryOptions } from "../lib/queryOptions";
 
@@ -19,15 +19,12 @@ export const epicsQueryOptions = (page: number) => {
   });
 };
 
-export const epicsCountQueryOptions = (timestarted: number) => {
+export const epicsCountQueryOptions = () => {
   return queryOptions({
     queryKey: ["epics", "count"],
     queryFn: async () => {
-      const timeDifference = +new Date() - timestarted;
-
-      console.log("Loading api/epics/count data at", timeDifference);
-      const result = await fetchJson<[{ count: number }]>("api/epics/count");
-      return result[0];
+      const result = await getEpicsCount();
+      return result;
     },
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5

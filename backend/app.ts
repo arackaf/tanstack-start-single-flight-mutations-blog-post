@@ -79,12 +79,6 @@ app.get("/api/epics/overview", async function (_, res) {
   });
 });
 
-app.get("/api/epics/count", function (_, res) {
-  query("SELECT COUNT(*) count FROM epics").then((result: any) => {
-    res.json(result);
-  });
-});
-
 app.post("/api/epic/update", jsonParser, function (req, res) {
   const { id, name } = req.body;
   command(

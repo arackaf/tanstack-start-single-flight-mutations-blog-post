@@ -21,7 +21,7 @@ export const Route = createFileRoute("/app/epics/")({
     const queryClient = context.queryClient;
 
     queryClient.ensureQueryData(epicsQueryOptions(deps.page));
-    queryClient.ensureQueryData(epicsCountQueryOptions(context.timestarted));
+    queryClient.ensureQueryData(epicsCountQueryOptions());
   },
   component: Index,
   pendingComponent: () => <div className="p-3 text-xl">Loading epics ...</div>,
@@ -31,13 +31,12 @@ export const Route = createFileRoute("/app/epics/")({
 
 function Index() {
   const { page } = Route.useSearch();
-  const context = Route.useRouteContext();
 
   const deferredPage = useDeferredValue(page);
   const loading = page !== deferredPage;
 
   const { data: epicsData } = useSuspenseQuery(epicsQueryOptions(deferredPage));
-  const { data: epicsCount } = useSuspenseQuery(epicsCountQueryOptions(context.timestarted));
+  const { data: epicsCount } = useSuspenseQuery(epicsCountQueryOptions());
 
   return (
     <div className="flex flex-col gap-2 p-3">
