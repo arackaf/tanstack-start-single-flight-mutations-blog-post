@@ -1,19 +1,16 @@
 import { queryOptions } from "@tanstack/react-query";
-import { fetchJson } from "../../backend/fetchUtils";
+import { getEpicsOverview } from "@/serverFn/epics";
 
 export type EpicOverview = {
   name: string;
   count: number;
 };
 
-export const epicsSummaryQueryOptions = (timestarted: number) => {
+export const epicsSummaryQueryOptions = () => {
   return queryOptions({
     queryKey: ["epics", "summary"],
     queryFn: async () => {
-      const timeDifference = +new Date() - timestarted;
-
-      console.log("Running api/epics/overview query at", timeDifference);
-      const epicsOverview = await fetchJson<EpicOverview[]>("api/epics/overview");
+      const epicsOverview = await getEpicsOverview();
       return { epicsOverview };
     },
     staleTime: 1000 * 60 * 5,

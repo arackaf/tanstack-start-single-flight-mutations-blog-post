@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
-import { epics as epicsTable } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { epics as epicsTable, tasks as tasksTable } from "@/drizzle/schema";
+import { count, eq, sql } from "drizzle-orm";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .validator((page: number) => page)
@@ -24,4 +24,23 @@ export const getEpic = createServerFn({ method: "GET" })
 export const getEpicsCount = createServerFn({ method: "GET" }).handler(async ({}) => {
   const count = await db.$count(epicsTable);
   return { count };
+});
+
+export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async ({}) => {
+  const subQuery = db
+    .select({ epicId: epicsTable.id, count: count().as("count") })
+    .from(epicsTable)
+    .innerJoin(tasksTable, eq(epicsTable.id, tasksTable.epicId))
+    .groupBy(epicsTable.id)
+    .as("epic_counts");
+
+  const query = db
+    .with(subQuery)
+    .select({ id: epicsTable.id, name: epicsTable.name, count: subQuery.count })
+    .from(epicsTable)
+    .innerJoin(subQuery, eq(epicsTable.id, subQuery.epicId))
+    .orderBy(sql`${subQuery.count} ASC`);
+
+  const results = await query;
+  return results;
 });

@@ -1,5 +1,4 @@
 import { getEpicsCount, getEpicsList } from "@/serverFn/epics";
-import { fetchJson } from "../../backend/fetchUtils";
 import { queryOptions } from "../lib/queryOptions";
 
 export type Epic = {

@@ -7,14 +7,13 @@ export const Route = createFileRoute("/app/epics")({
   component: EpicLayout,
   loader({ context }) {
     const queryClient = context.queryClient;
-    queryClient.prefetchQuery(epicsSummaryQueryOptions(context.timestarted));
+    queryClient.prefetchQuery(epicsSummaryQueryOptions());
   },
   pendingComponent: () => <div className="p-3 text-xl">Loading epics route ...</div>
 });
 
 function EpicLayout() {
-  const context = Route.useRouteContext();
-  const { data } = useSuspenseQuery(epicsSummaryQueryOptions(context.timestarted));
+  const { data } = useSuspenseQuery(epicsSummaryQueryOptions());
 
   return (
     <div className="flex flex-col gap-3">

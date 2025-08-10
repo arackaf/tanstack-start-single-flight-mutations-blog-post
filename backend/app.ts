@@ -57,28 +57,6 @@ app.post("/api/task/update", jsonParser, function (req, res) {
   });
 });
 
-app.get("/api/epics/overview", async function (_, res) {
-  query<Task[]>(
-    `
-      WITH aggregates AS (
-          SELECT epicId, count(*) count
-          FROM epics e
-          INNER JOIN tasks t
-          ON e.id = t.epicId
-          GROUP BY epicId
-      )
-      SELECT e.name, agg.count
-      FROM epics e
-      INNER JOIN aggregates agg
-      ON e.id = agg.epicId
-      ORDER BY count ASC
-  `,
-    []
-  ).then((result: any) => {
-    res.json(result);
-  });
-});
-
 app.post("/api/epic/update", jsonParser, function (req, res) {
   const { id, name } = req.body;
   command(
