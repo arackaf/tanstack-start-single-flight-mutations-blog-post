@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MilestoneSearch } from "../../../../../MilestoneSearch";
 import { fetchJson } from "../../../../../../backend/fetchUtils";
 import { Milestone } from "../../../../../../types";
+import { MilestoneSearch } from "@/components/MilestoneSearch";
 
 type SearchParams = {
   search: string;

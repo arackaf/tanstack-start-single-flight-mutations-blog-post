@@ -1,15 +1,15 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { epicQueryOptions } from "../../../../queries/epicQuery";
 import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/app/epics/$epicId/")({
   component: EpicIndex,
-  context: ({ params }) => {},
+  context: ({}) => {},
   loader: ({ context, params }) => {
     const { queryClient, timestarted } = context;
 
-    //queryClient.ensureQueryData(epicQueryOptions(timestarted, params.epicId));
+    queryClient.ensureQueryData(epicQueryOptions(timestarted, params.epicId));
   },
   gcTime: 1000 * 60 * 5,
   staleTime: 1000 * 60 * 5,
