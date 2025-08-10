@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
-import { epics as epicsTable, tasks as tasksTable } from "@/drizzle/schema";
-import { asc, count, eq, sql } from "drizzle-orm";
+import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
+import { asc, count, eq } from "drizzle-orm";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .validator((page: number) => page)
@@ -44,3 +44,14 @@ export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async 
   const results = await query;
   return results;
 });
+
+export const getEpicMilestones = createServerFn({ method: "GET" })
+  .validator((id: string | number) => Number(id))
+  .handler(async ({ data }) => {
+    const milestones = await db
+      .select()
+      .from(milestonesTable)
+      .where(eq(milestonesTable.epicId, data))
+      .orderBy(milestonesTable.id);
+    return milestones;
+  });
