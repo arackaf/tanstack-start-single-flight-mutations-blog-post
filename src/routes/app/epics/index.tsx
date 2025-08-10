@@ -49,10 +49,10 @@ function Index() {
           {epicsData.map((e, idx) => (
             <Fragment key={idx}>
               <div>{e.name}</div>
-              <Link to="/app/epics/$epicId" params={{ epicId: e.id }} className="border p-1 rounded">
+              <Link to="/app/epics/$epicId" params={{ epicId: e.id + "" }} className="border p-1 rounded">
                 View
               </Link>
-              <Link to="/app/epics/$epicId/edit" params={{ epicId: e.id }} className="border p-1 rounded">
+              <Link to="/app/epics/$epicId/edit" params={{ epicId: e.id + "" }} className="border p-1 rounded">
                 Edit
               </Link>
             </Fragment>

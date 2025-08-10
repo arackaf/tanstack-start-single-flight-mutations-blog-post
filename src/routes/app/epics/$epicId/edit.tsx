@@ -88,7 +88,7 @@ function EditEpic() {
         <div className="flex flex-col gap-2">
           <span>Edit epic {epic.id}</span>
           <span>{epic.name}</span>
-          <input className="self-start border p-2 w-64" ref={newName} defaultValue={epic.name} />
+          <input className="self-start border p-2 w-64" ref={newName} defaultValue={epic.name ?? ""} />
           <div className="flex gap-2"></div>
           <button className="self-start p-2 border" onClick={save}>
             Save

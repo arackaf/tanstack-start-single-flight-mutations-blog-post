@@ -30,10 +30,10 @@ function Index() {
         {tasks.map((t, idx) => (
           <Fragment key={idx}>
             <div>{t.title}</div>
-            <Link to="/app/tasks/$taskId" className="border p-1 rounded" params={{ taskId: t.id }}>
+            <Link to="/app/tasks/$taskId" className="border p-1 rounded" params={{ taskId: t.id + "" }}>
               View
             </Link>
-            <Link to="/app/tasks/$taskId/edit" className="border p-1 rounded" params={{ taskId: t.id }}>
+            <Link to="/app/tasks/$taskId/edit" className="border p-1 rounded" params={{ taskId: t.id + "" }}>
               Edit
             </Link>
           </Fragment>
