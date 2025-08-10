@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 
-import bodyParser, { json } from "body-parser";
+import bodyParser from "body-parser";
 import { setup } from "./db-setup";
 import { command, query } from "./db-utils";
 import { Task } from "../types";
@@ -16,18 +16,18 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(jsonParser);
 
-app.get("/", function (req, res) {
+app.get("/", function (_, res) {
   res.json({});
 });
 
-app.get("/api/tasks/overview", function (req, res) {
+app.get("/api/tasks/overview", function (_, res) {
   query(`
     SELECT u.name user, count(*) count
     FROM tasks t
     INNER JOIN users u
     ON t.userId = u.id
     GROUP BY u.id
-  `).then(tasks => {
+  `).then((tasks) => {
     res.json(tasks);
   });
 });
@@ -40,8 +40,8 @@ app.get("/api/tasks", async function (req, res) {
     FROM tasks t
     WHERE userId = ?
   `,
-    [userId],
-  ).then(tasks => {
+    [userId]
+  ).then((tasks) => {
     res.json(tasks);
   });
 });
@@ -53,9 +53,9 @@ app.get("/api/tasks/:id", async function (req, res) {
     FROM tasks t
     WHERE id = ?
   `,
-    [req.params.id],
+    [req.params.id]
   )
-    .then(tasks => new Promise(res => setTimeout(() => res(tasks), 750)))
+    .then((tasks) => new Promise((res) => setTimeout(() => res(tasks), 750)))
     .then((tasks: any) => {
       res.json(tasks[0]);
     });
@@ -69,13 +69,13 @@ app.post("/api/task/update", jsonParser, function (req, res) {
     SET title = ?
     WHERE id = ?  
     `,
-    [title, id],
+    [title, id]
   ).then(() => {
     res.json({ sucess: true });
   });
 });
 
-app.get("/api/epics/overview", async function (req, res) {
+app.get("/api/epics/overview", async function (_, res) {
   query<Task[]>(
     `
       WITH aggregates AS (
@@ -91,7 +91,7 @@ app.get("/api/epics/overview", async function (req, res) {
       ON e.id = agg.epicId
       ORDER BY count ASC
   `,
-    [],
+    []
   ).then((result: any) => {
     res.json(result);
   });
@@ -104,7 +104,7 @@ app.get("/api/epics", function (req, res) {
   });
 });
 
-app.get("/api/epics/count", function (req, res) {
+app.get("/api/epics/count", function (_, res) {
   query("SELECT COUNT(*) count FROM epics").then((result: any) => {
     res.json(result);
   });
@@ -117,9 +117,9 @@ app.get("/api/epics/:id", async function (req, res) {
     FROM epics
     WHERE id = ?
   `,
-    [parseInt(req.params.id)],
+    [parseInt(req.params.id)]
   )
-    .then(epics => new Promise(res => setTimeout(() => res(epics), 750)))
+    .then((epics) => new Promise((res) => setTimeout(() => res(epics), 750)))
     .then((epics: any) => {
       res.json({ ...epics[0], time: Date.now() });
     });
@@ -133,7 +133,7 @@ app.post("/api/epic/update", jsonParser, function (req, res) {
     SET name = ?
     WHERE id = ?  
     `,
-    [name, id],
+    [name, id]
   ).then(() => {
     res.json({ sucess: true });
   });
@@ -147,7 +147,7 @@ app.get("/api/epics/:id/milestones", async function (req, res) {
     WHERE epicId = ?
     ORDER BY id ASC
   `,
-    [parseInt(req.params.id)],
+    [parseInt(req.params.id)]
   ).then((milestones: any) => {
     res.json(milestones);
   });
