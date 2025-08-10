@@ -12,7 +12,7 @@ export const createRouter = () => {
   return routerWithQueryClient(
     createTanstackRouter({
       routeTree,
-      context: { ...rqContext, timestarted: +new Date(), user: null },
+      context: { ...rqContext, timestarted: +new Date() },
       defaultPreload: "intent",
       Wrap: (props: { children: React.ReactNode }) => {
         return <TanstackQuery.Provider {...rqContext}>{props.children}</TanstackQuery.Provider>;

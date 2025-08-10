@@ -32,8 +32,8 @@ app.get("/api/tasks/overview", function (_, res) {
   });
 });
 
-app.get("/api/tasks", async function (req, res) {
-  const userId = Number(req.cookies.user);
+app.get("/api/tasks", async function (_, res) {
+  const userId = 1;
   query(
     `
     SELECT * 
