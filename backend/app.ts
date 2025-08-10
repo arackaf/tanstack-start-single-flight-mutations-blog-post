@@ -29,19 +29,6 @@ app.get("/", function (_, res) {
   res.json({});
 });
 
-app.get("/api/tasks/overview", function (_, res) {
-  console.log("in tasks overview");
-  query(`
-    SELECT u.name user, count(*) count
-    FROM tasks t
-    INNER JOIN users u
-    ON t.userId = u.id
-    GROUP BY u.id
-  `).then(tasks => {
-    console.log("tasks", tasks);
-    res.json(tasks);
-  });
-});
 
 app.post("/api/task/update", jsonParser, function (req, res) {
   const { id, title } = req.body;
@@ -71,7 +58,7 @@ app.post("/api/epic/update", jsonParser, function (req, res) {
   });
 });
 
-app.get("/api/epics/:id/milestones", async function (req, res) {
+app.get("/api/epics/:id/milestonesXXXX", async function (req, res) {
   query<Task[]>(
     `
     SELECT * 

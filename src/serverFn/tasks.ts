@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
-import { tasks as tasksTable } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { tasks as tasksTable, users as usersTable } from "@/drizzle/schema";
+import { asc, count, eq } from "drizzle-orm";
 
 export const getTasksList = createServerFn({ method: "GET" }).handler(async () => {
   const tasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, 1));
@@ -14,3 +14,14 @@ export const getTask = createServerFn({ method: "GET" })
     const task = await db.select().from(tasksTable).where(eq(tasksTable.id, data));
     return task[0];
   });
+
+export const getTasksOverview = createServerFn({ method: "GET" }).handler(async () => {
+  const results = await db
+    .select({ user: usersTable.name, count: count() })
+    .from(tasksTable)
+    .innerJoin(usersTable, eq(tasksTable.userId, usersTable.id))
+    .groupBy(usersTable.id)
+    .orderBy(asc(usersTable.name));
+
+  return results;
+});

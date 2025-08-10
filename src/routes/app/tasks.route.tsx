@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { fetchJson } from "../../../backend/fetchUtils";
 import { Fragment } from "react/jsx-runtime";
+import { getTasksOverview } from "@/serverFn/tasks";
 
 type TaskOverview = {
   user: string;
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/app/tasks")({
   loader: async ({ context }) => {
     const now = +new Date();
     console.log(`/tasks route loader. Loading task layout info at + ${now - context.timestarted}ms since start`);
-    const tasksOverview = await fetchJson<TaskOverview[]>("api/tasks/overview");
+    const tasksOverview = await getTasksOverview();
     return { tasksOverview };
   },
   errorComponent: () => <h1>Yooo</h1>,
