@@ -4,7 +4,6 @@ import { epicQueryOptions } from "../../../../queries/epicQuery";
 
 export const Route = createFileRoute("/app/epics/$epicId/")({
   component: EpicIndex,
-  context: ({ params }) => {},
   loader: ({ context, params }) => {
     const { queryClient, timestarted } = context;
 
