@@ -1,17 +1,49 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { QueryClient } from "@tanstack/react-query";
+import { createRootRouteWithContext, Outlet, useRouterState } from "@tanstack/react-router";
+import { Scripts, Meta } from "@tanstack/react-start";
+import { FC } from "react";
 
-import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx";
+import appCss from "../styles/globals.css?url";
 
-import appCss from "../styles.css?url";
+const Loading: FC<{ shown: boolean }> = (props) => {
+  const { shown } = props;
+  const corePosition = "fixed left-[50%] top-0 translate-x-[-50%] bg-yellow-300";
+  return (
+    <div
+      style={{
+        opacity: shown ? 1 : 0,
+        transition: shown ? "opacity 300ms ease-in 20ms" : "",
+      }}
+      className={`${corePosition} rounded-b px-2 py-1`}
+    >
+      Loading ...
+    </div>
+  );
+};
 
-import type { QueryClient } from "@tanstack/react-query";
-
-interface MyRouterContext {
+type MyRouterContext = {
   queryClient: QueryClient;
-}
+  user: { id: string; name: string } | null;
+  timestarted: number;
+};
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  async beforeLoad({ context }) {
+    if (context.user) {
+      return { user: context.user };
+    }
+
+    const result = { id: "1", name: "Adam" };
+    return result;
+  },
+  context({ location }) {
+    const timeStarted = +new Date();
+    console.log("");
+    console.log("Fresh navigation to", location.href);
+    console.log("------------------------------------------------------------------------------------");
+
+    return { timestarted: timeStarted };
+  },
   head: () => ({
     meta: [
       {
@@ -25,28 +57,27 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         title: "TanStack Start Starter",
       },
     ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
-
-  shellComponent: RootDocument,
+  component: Root,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function Root() {
+  const state = useRouterState();
+  const isNavigating = state.isLoading;
+
   return (
-    <html lang="en">
+    <html>
       <head>
-        <HeadContent />
+        <Meta />
       </head>
+
       <body>
-        {children}
-        <TanStackRouterDevtools />
-        <TanStackQueryLayout />
-        <Scripts />
+        <div className="p-x-2">
+          <Loading shown={isNavigating} />
+          <Outlet />
+          <Scripts />
+        </div>
       </body>
     </html>
   );
