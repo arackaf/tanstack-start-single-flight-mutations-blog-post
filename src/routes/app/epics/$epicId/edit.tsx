@@ -22,9 +22,9 @@ export const saveEpic = createServerFn({ method: "POST" })
 
 export const Route = createFileRoute("/app/epics/$epicId/edit")({
   component: EditEpic,
-  context({ context, params }) {
+  context({ params }) {
     return {
-      currentEpicOptions: epicQueryOptions(context.timestarted, params.epicId)
+      currentEpicOptions: epicQueryOptions(params.epicId)
     };
   },
   loader({ context }) {

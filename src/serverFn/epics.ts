@@ -15,7 +15,7 @@ export const getEpicsList = createServerFn({ method: "GET" })
   });
 
 export const getEpic = createServerFn({ method: "GET" })
-  .validator((id: string) => Number(id))
+  .validator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const task = await db.select().from(epicsTable).where(eq(epicsTable.id, data));
     return task[0];

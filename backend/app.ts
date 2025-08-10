@@ -85,21 +85,6 @@ app.get("/api/epics/count", function (_, res) {
   });
 });
 
-app.get("/api/epics/:id", async function (req, res) {
-  query<Task[]>(
-    `
-    SELECT * 
-    FROM epics
-    WHERE id = ?
-  `,
-    [parseInt(req.params.id)]
-  )
-    .then(epics => new Promise(res => setTimeout(() => res(epics), 750)))
-    .then((epics: any) => {
-      res.json({ ...epics[0], time: Date.now() });
-    });
-});
-
 app.post("/api/epic/update", jsonParser, function (req, res) {
   const { id, name } = req.body;
   command(

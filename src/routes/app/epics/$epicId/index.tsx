@@ -5,9 +5,8 @@ import { epicQueryOptions } from "../../../../queries/epicQuery";
 export const Route = createFileRoute("/app/epics/$epicId/")({
   component: EpicIndex,
   loader: ({ context, params }) => {
-    const { queryClient, timestarted } = context;
-
-    queryClient.ensureQueryData(epicQueryOptions(timestarted, params.epicId));
+    const { queryClient } = context;
+    queryClient.ensureQueryData(epicQueryOptions(params.epicId));
   },
   gcTime: 1000 * 60 * 5,
   staleTime: 1000 * 60 * 5,
@@ -16,9 +15,8 @@ export const Route = createFileRoute("/app/epics/$epicId/")({
 
 function EpicIndex() {
   const { epicId } = Route.useParams();
-  const { timestarted } = Route.useRouteContext();
 
-  const { data: epic } = useSuspenseQuery(epicQueryOptions(timestarted, epicId));
+  const { data: epic } = useSuspenseQuery(epicQueryOptions(epicId));
 
   return (
     <div className="flex flex-col gap-3 p-3">
