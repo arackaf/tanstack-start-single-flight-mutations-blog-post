@@ -3,17 +3,17 @@ import { sql } from "drizzle-orm";
 
 export const users = sqliteTable("users", {
   id: integer().primaryKey(),
-  name: text()
+  name: text().notNull()
 });
 
 export const epics = sqliteTable("epics", {
   id: integer().primaryKey(),
-  name: text()
+  name: text().notNull()
 });
 
 export const tasks = sqliteTable("tasks", {
   id: integer().primaryKey(),
-  title: text(),
+  title: text().notNull(),
   epicId: integer(),
   userId: integer()
 });
@@ -21,5 +21,5 @@ export const tasks = sqliteTable("tasks", {
 export const milestones = sqliteTable("milestones", {
   id: integer().primaryKey(),
   epicId: integer(),
-  name: text()
+  name: text().notNull()
 });

@@ -11,16 +11,16 @@ export async function setup() {
     }
 
     await run("DROP TABLE IF EXISTS users");
-    await run("CREATE TABLE users (id INT PRIMARY KEY, name TEXT)");
+    await run("CREATE TABLE users (id INT PRIMARY KEY, name TEXT NOT NULL)");
 
     await run("DROP TABLE IF EXISTS epics");
-    await run("CREATE TABLE epics (id INT PRIMARY KEY, name TEXT)");
+    await run("CREATE TABLE epics (id INT PRIMARY KEY, name TEXT NOT NULL)");
 
     await run("DROP TABLE IF EXISTS tasks");
-    await run("CREATE TABLE tasks (id INT PRIMARY KEY, title TEXT, epicId INT, userId INT)");
+    await run("CREATE TABLE tasks (id INT PRIMARY KEY, title TEXT NOT NULL, epicId INT, userId INT)");
 
     await run("DROP TABLE IF EXISTS milestones");
-    await run("CREATE TABLE milestones (id INT PRIMARY KEY, epicId INT, name TEXT)");
+    await run("CREATE TABLE milestones (id INT PRIMARY KEY, epicId INT, name TEXT NOT NULL)");
 
     for (const user of users) {
       await run("INSERT INTO users VALUES (?, ?)", [user.id, user.name]);
