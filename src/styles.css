@@ -1,4 +1,4 @@
-@import "tailwind";
+@import "tailwindcss";
 
 body {
   @apply m-0;
