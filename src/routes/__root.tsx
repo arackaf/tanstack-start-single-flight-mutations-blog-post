@@ -1,7 +1,7 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import { HeadContent, Scripts, createRootRouteWithContext, Outlet, useMatch, useMatches } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import TanStackQueryLayout from "../integrations/tanstack-query/layout";
+// import TanStackQueryLayout from "../integrations/tanstack-query/layout";
 
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -13,6 +13,12 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  notFoundComponent: props => {
+    return <div>Not found</div>;
+  },
+  component: () => {
+    return <Outlet />;
+  },
   head: () => ({
     meta: [
       {
@@ -45,8 +51,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackRouterDevtools />
-        <TanStackQueryLayout />
+        {/* <TanStackRouterDevtools /> */}
+        {/* <TanStackQueryLayout /> */}
         <Scripts />
       </body>
     </html>
