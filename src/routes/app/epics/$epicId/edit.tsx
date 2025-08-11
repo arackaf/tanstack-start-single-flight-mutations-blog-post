@@ -3,22 +3,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { postToApi } from "../../../../../backend/fetchUtils";
-import { createServerFn } from "@tanstack/react-start";
+
 import { epicQueryOptions } from "@/queries/epicQuery";
-
-export const saveEpic = createServerFn({ method: "POST" })
-  .validator((updates: { id: string; newName: string }) => updates)
-  .handler(async ({ data }) => {
-    console.log("\nRunning server function");
-
-    await postToApi("api/epic/update", {
-      id: data.id,
-      name: data.newName
-    });
-
-    //throw redirect({ to: "/app/epics", search: { page: 1 } });
-  });
+import { updateEpic } from "@/serverFn/epics";
 
 export const Route = createFileRoute("/app/epics/$epicId/edit")({
   component: EditEpic,
@@ -43,7 +30,7 @@ function EditEpic() {
 
   //const queryClient = useQueryClient();
 
-  const runSave = useServerFn(saveEpic);
+  const runSave = useServerFn(updateEpic);
 
   const save = async () => {
     console.log("HELLO");
@@ -52,7 +39,7 @@ function EditEpic() {
     const result: any = await runSave({
       data: {
         id: epic.id,
-        newName: newName.current!.value
+        name: newName.current!.value
       }
     });
 

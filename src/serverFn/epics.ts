@@ -55,3 +55,9 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
       .orderBy(milestonesTable.id);
     return milestones;
   });
+
+export const updateEpic = createServerFn({ method: "GET" })
+  .validator((obj: { id: number; name: string }) => obj)
+  .handler(async ({ data }) => {
+    await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
+  });
