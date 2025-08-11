@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
-    "server": "tsx backend/app.ts",
+    "reset-db": "tsx backend/db-setup.ts",
     "start": "node .output/server/index.mjs",
     "build": "vite build",
     "serve": "vite preview",
