@@ -25,3 +25,9 @@ export const getTasksOverview = createServerFn({ method: "GET" }).handler(async 
 
   return results;
 });
+
+export const updateTask = createServerFn({ method: "POST" })
+  .validator((obj: { id: number; name: string }) => obj)
+  .handler(async ({ data }) => {
+    await db.update(tasksTable).set({ title: data.name }).where(eq(tasksTable.id, data.id));
+  });

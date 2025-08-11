@@ -29,22 +29,6 @@ app.get("/", function (_, res) {
   res.json({});
 });
 
-
-
-app.post("/api/task/update", jsonParser, function (req, res) {
-  const { id, title } = req.body;
-  command(
-    `
-    UPDATE tasks
-    SET title = ?
-    WHERE id = ?  
-    `,
-    [title, id]
-  ).then(() => {
-    res.json({ sucess: true });
-  });
-});
-
 app.post("/api/epic/update", jsonParser, function (req, res) {
   const { id, name } = req.body;
   command(
