@@ -1,4 +1,4 @@
-import { sqliteTable, AnySQLiteColumn, integer, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, AnySQLiteColumn, integer, text, numeric } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
 export const users = sqliteTable("users", {
@@ -22,4 +22,14 @@ export const milestones = sqliteTable("milestones", {
   id: integer().primaryKey(),
   epicId: integer(),
   name: text().notNull()
+});
+
+export const actionLog = sqliteTable("action_log", {
+  id: text().primaryKey(),
+  traceId: text("trace_id"),
+  clientStart: text("client_start"),
+  clientEnd: text("client_end"),
+  actionName: text("action_name").notNull(),
+  actionDuration: numeric("action_duration"),
+  actionType: text("action_type")
 });
