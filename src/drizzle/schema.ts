@@ -30,6 +30,6 @@ export const actionLog = sqliteTable("action_log", {
   clientStart: text("client_start"),
   clientEnd: text("client_end"),
   actionName: text("action_name").notNull(),
-  actionDuration: numeric("action_duration"),
+  actionDuration: numeric("action_duration", { mode: "number" }),
   actionType: text("action_type")
 });
