@@ -30,6 +30,7 @@ app.get("/", function (_, res) {
 });
 
 
+
 app.post("/api/task/update", jsonParser, function (req, res) {
   const { id, title } = req.body;
   command(
@@ -55,20 +56,6 @@ app.post("/api/epic/update", jsonParser, function (req, res) {
     [name, id]
   ).then(() => {
     res.json({ sucess: true });
-  });
-});
-
-app.get("/api/epics/:id/milestonesXXXX", async function (req, res) {
-  query<Task[]>(
-    `
-    SELECT * 
-    FROM milestones
-    WHERE epicId = ?
-    ORDER BY id ASC
-  `,
-    [parseInt(req.params.id)]
-  ).then((milestones: any) => {
-    res.json(milestones);
   });
 });
 
