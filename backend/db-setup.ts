@@ -24,7 +24,7 @@ export async function setup() {
 
     await run("DROP TABLE IF EXISTS action_log");
     await run(
-      "CREATE TABLE action_log (id TEXT PRIMARY KEY, trace_id TEXT, client_start TEXT, client_end TEXT, action_name TEXT NOT NULL, action_duration NUMERIC(14, 2), action_type TEXT)"
+      "CREATE TABLE action_log (id TEXT PRIMARY KEY, trace_id TEXT, client_start TEXT, client_end TEXT, action_name TEXT NOT NULL, action_duration NUMERIC(14, 2))"
     );
 
     for (const user of users) {
