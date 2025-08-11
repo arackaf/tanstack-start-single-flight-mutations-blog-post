@@ -1,25 +1,36 @@
 import { createMiddleware } from "@tanstack/react-start";
-
-import { addLog } from "@/queries/logging";
+import { addLog, setClientEnd } from "./logging";
 
 export const loggingMiddleware = (name: string) =>
   createMiddleware({ type: "function" })
     .client(async ({ next, context }) => {
       console.log(name, "client", context);
 
-      return next({
+      const result = await next({
         sendContext: {
           traceId: crypto.randomUUID(),
           clientStart: new Date().toISOString()
         }
       });
+
+      const clientEnd = new Date().toISOString();
+      const loggingId = result.context.loggingId;
+
+      await setClientEnd({ data: { id: loggingId, clientEnd } });
+
+      return result;
     })
     .server(async ({ next, context }) => {
       const start = +new Date();
-      const result = await next({});
+      const result = await next({
+        sendContext: {
+          loggingId: "" as string
+        }
+      });
       const end = +new Date();
 
-      addLog(name, context.clientStart, context.traceId, end - start);
+      const id = await addLog(name, context.clientStart, context.traceId, end - start);
+      result.sendContext.loggingId = id;
 
       return result;
     });
