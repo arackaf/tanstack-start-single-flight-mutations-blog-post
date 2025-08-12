@@ -1,11 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getEpic } from "@/serverFn/epics";
 
-export type Epic = {
-  id: string;
-  name: string;
-};
-
 export const epicQueryOptions = (id: string | number) => {
   id = Number(id);
 
