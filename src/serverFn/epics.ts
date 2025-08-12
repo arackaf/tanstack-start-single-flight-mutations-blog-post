@@ -5,7 +5,7 @@ import { asc, count, eq } from "drizzle-orm";
 import { loggingMiddleware } from "@/middleware/logging";
 
 export const getEpicsList = createServerFn({ method: "GET" })
-  //.middleware([loggingMiddleware("get epics list")])
+  .middleware([loggingMiddleware("get epics list")])
   .validator((page: number) => page)
   .handler(async ({ data }) => {
     const epics = await db
