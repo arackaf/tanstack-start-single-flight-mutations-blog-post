@@ -17,12 +17,7 @@ type RefetchMiddlewareConfig = {
 };
 export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
   createMiddleware({ type: "function" })
-    .client(async ({ next, context, router }) => {
-      console.log("--------------------------------\n");
-      console.log(partialMatchKey(["epics", "list", 1], ["epics", "list"]));
-      console.log(partialMatchKey(["epics", "list"], ["epics", "list", 1]));
-      console.log(partialMatchKey(["epics", "list", 1], ["epics", "list", 1]));
-      console.log("--------------------------------\n");
+    .client(async ({ next, router }) => {
       const { refetch = [], refetchIfActive = [], invalidate = [] } = config;
 
       const revalidate: RevalidationPayload = {
@@ -79,6 +74,13 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         }
       });
 
+      console.log("result", result.context);
+
+      Object.entries(result.context?.payloads ?? {}).forEach(([jsonKey, value]) => {
+        const key = JSON.parse(jsonKey);
+        queryClient.setQueryData(key, value, { updatedAt: Date.now() });
+      });
+
       return result;
     })
     .server(async ({ next, context }) => {
@@ -88,12 +90,11 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         }
       });
 
-      console.log("context", context);
       for (const refetchPayload of context.revalidate.refetch) {
         const results = await refetchPayload.fn({ data: refetchPayload.args });
         console.log({ key: refetchPayload.key, results });
 
-        result.sendContext.payloads[refetchPayload.key] = results;
+        result.sendContext.payloads[JSON.stringify(refetchPayload.key)] = results;
       }
 
       return result;

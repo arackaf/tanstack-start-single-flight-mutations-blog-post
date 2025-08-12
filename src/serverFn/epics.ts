@@ -9,6 +9,7 @@ export const getEpicsList = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get epics list")])
   .validator((page: number) => page)
   .handler(async ({ data }) => {
+    // await new Promise(resolve => setTimeout(resolve, 1000));
     const epics = await db
       .select()
       .from(epicsTable)

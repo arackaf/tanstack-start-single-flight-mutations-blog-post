@@ -1,7 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { epicQueryOptions } from "@/queries/epicQuery";
@@ -31,6 +31,7 @@ function EditEpic() {
   //const queryClient = useQueryClient();
 
   const runSave = useServerFn(updateEpic);
+  const navigate = useNavigate();
 
   const save = async () => {
     console.log("HELLO");
@@ -59,7 +60,7 @@ function EditEpic() {
 
     setSaving(false);
 
-    throw redirect({ to: "/app/epics", search: { page: 1 } });
+    navigate({ to: "/app/epics", search: { page: 1 } });
   };
 
   useEffect(() => {
