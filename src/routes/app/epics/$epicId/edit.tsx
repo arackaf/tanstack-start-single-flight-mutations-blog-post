@@ -1,7 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { epicQueryOptions } from "@/queries/epicQuery";
@@ -58,6 +58,8 @@ function EditEpic() {
     //queryClient.refetchQueries({ queryKey: ["epic"], type: "active", stale: true });
 
     setSaving(false);
+
+    throw redirect({ to: "/app/epics", search: { page: 1 } });
   };
 
   useEffect(() => {

@@ -66,7 +66,14 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("update epic"), refetchMiddleware([["epic"], ["epics"]])])
+  .middleware([
+    loggingMiddleware("update epic"),
+    refetchMiddleware({
+      invalidate: [["epics", "list"]],
+      refetch: [["epics", "list", 1]],
+      refetchIfActive: [["epic"]]
+    })
+  ])
   .validator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));

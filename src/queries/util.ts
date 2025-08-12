@@ -22,8 +22,10 @@ export const revalidatedQueryOptions = <T, U>(
     meta:
       typeof window === "object"
         ? {
-            serverFn,
-            args
+            __revalidate: {
+              serverFn,
+              args
+            }
           }
         : undefined
   });
