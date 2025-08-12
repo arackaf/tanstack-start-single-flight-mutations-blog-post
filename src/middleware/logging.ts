@@ -29,7 +29,9 @@ export const loggingMiddleware = (name: string) =>
       });
       const end = +new Date();
 
-      const id = await addLog(name, context.clientStart, context.traceId, end - start);
+      const id = await addLog({
+        data: { actionName: name, clientStart: context.clientStart, traceId: context.traceId, duration: end - start }
+      });
       result.sendContext.loggingId = id;
 
       return result;
