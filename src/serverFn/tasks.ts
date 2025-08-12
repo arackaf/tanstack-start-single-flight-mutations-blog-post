@@ -5,7 +5,7 @@ import { asc, count, eq } from "drizzle-orm";
 import { loggingMiddleware } from "./middleware";
 
 export const getTasksList = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("tasks list")])
+  .middleware([loggingMiddleware("get tasks list")])
   .handler(async () => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     const tasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, 1));
@@ -13,22 +13,25 @@ export const getTasksList = createServerFn({ method: "GET" })
   });
 
 export const getTask = createServerFn({ method: "GET" })
+  .middleware([loggingMiddleware("get task")])
   .validator((id: string) => Number(id))
   .handler(async ({ data }) => {
     const task = await db.select().from(tasksTable).where(eq(tasksTable.id, data));
     return task[0];
   });
 
-export const getTasksOverview = createServerFn({ method: "GET" }).handler(async () => {
-  const results = await db
-    .select({ user: usersTable.name, count: count() })
-    .from(tasksTable)
-    .innerJoin(usersTable, eq(tasksTable.userId, usersTable.id))
-    .groupBy(usersTable.id)
-    .orderBy(asc(usersTable.name));
+export const getTasksOverview = createServerFn({ method: "GET" })
+  .middleware([loggingMiddleware("get tasks overview")])
+  .handler(async () => {
+    const results = await db
+      .select({ user: usersTable.name, count: count() })
+      .from(tasksTable)
+      .innerJoin(usersTable, eq(tasksTable.userId, usersTable.id))
+      .groupBy(usersTable.id)
+      .orderBy(asc(usersTable.name));
 
-  return results;
-});
+    return results;
+  });
 
 export const updateTask = createServerFn({ method: "POST" })
   .middleware([loggingMiddleware("update task")])
