@@ -1,5 +1,5 @@
 import { createMiddleware } from "@tanstack/react-start";
-import { addLog, setClientEnd } from "./logging";
+import { addLog, setClientEnd } from "../serverFn/logging";
 
 export const loggingMiddleware = (name: string) =>
   createMiddleware({ type: "function" })

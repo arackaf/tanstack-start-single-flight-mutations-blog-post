@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
-import { loggingMiddleware } from "./middleware";
+import { loggingMiddleware } from "@/middleware/logging";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   //.middleware([loggingMiddleware("get epics list")])
