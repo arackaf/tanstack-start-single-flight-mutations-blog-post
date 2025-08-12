@@ -60,7 +60,7 @@ function EditEpic() {
 
     setSaving(false);
 
-    navigate({ to: "/app/epics", search: { page: 1 } });
+    //navigate({ to: "/app/epics", search: { page: 1 } });
   };
 
   useEffect(() => {
