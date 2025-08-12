@@ -19,9 +19,12 @@ export const revalidatedQueryOptions = <T, U>(
       const result = (await serverFn({ data: args })) as U;
       return result;
     },
-    meta: {
-      serverFn,
-      args
-    }
+    meta:
+      typeof window === "object"
+        ? {
+            serverFn,
+            args
+          }
+        : undefined
   });
 };
