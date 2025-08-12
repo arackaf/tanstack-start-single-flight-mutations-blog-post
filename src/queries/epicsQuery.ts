@@ -1,11 +1,6 @@
 import { getEpicsCount, getEpicsList } from "@/serverFn/epics";
 import { queryOptions } from "../lib/queryOptions";
 
-export type Epic = {
-  id: string;
-  name: string;
-};
-
 export const epicsQueryOptions = (page: number) => {
   return queryOptions({
     queryKey: ["epics", "list", page],
