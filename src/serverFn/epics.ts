@@ -3,6 +3,7 @@ import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
 import { loggingMiddleware } from "@/middleware/logging";
+import { refetchMiddleware } from "@/middleware/refetch";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get epics list")])
@@ -65,7 +66,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("update epic")])
+  .middleware([loggingMiddleware("update epic"), refetchMiddleware([["epic"], ["epics"]])])
   .validator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
