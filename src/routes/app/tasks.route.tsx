@@ -2,11 +2,6 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Fragment } from "react/jsx-runtime";
 import { getTasksOverview } from "@/serverFn/tasks";
 
-type TaskOverview = {
-  user: string;
-  count: number;
-};
-
 export const Route = createFileRoute("/app/tasks")({
   component: TasksLayout,
   loader: async ({ context }) => {
