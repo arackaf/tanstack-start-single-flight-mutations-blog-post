@@ -4,7 +4,7 @@ import { tasks as tasksTable, users as usersTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
 
 export const getTasksList = createServerFn({ method: "GET" }).handler(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000 * Math.random()));
+  await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
   const tasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, 1));
   return tasks;
 });
@@ -30,6 +30,6 @@ export const getTasksOverview = createServerFn({ method: "GET" }).handler(async 
 export const updateTask = createServerFn({ method: "POST" })
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000 * Math.random()));
+    await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(tasksTable).set({ title: data.name }).where(eq(tasksTable.id, data.id));
   });

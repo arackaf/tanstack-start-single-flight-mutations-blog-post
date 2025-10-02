@@ -50,7 +50,11 @@ export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async 
 export const getEpicMilestones = createServerFn({ method: "GET" })
   .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
-    const milestones = await db.select().from(milestonesTable).where(eq(milestonesTable.epicId, data)).orderBy(milestonesTable.id);
+    const milestones = await db
+      .select()
+      .from(milestonesTable)
+      .where(eq(milestonesTable.epicId, data))
+      .orderBy(milestonesTable.id);
     return milestones;
   });
 
@@ -59,11 +63,11 @@ export const updateEpic = createServerFn({ method: "GET" })
     refetchMiddleware({
       invalidate: [["epics", "list"]],
       refetch: [["epics", "list", 1]],
-      refetchIfActive: [["epic"]],
-    }),
+      refetchIfActive: [["epic"]]
+    })
   ])
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000 * Math.random()));
+    await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
   });

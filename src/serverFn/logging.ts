@@ -17,7 +17,7 @@ export const addLog = createServerFn({ method: "POST" })
       clientStart,
       clientEnd: "",
       actionName,
-      actionDuration: duration,
+      actionDuration: duration
     });
 
     return id as string;
