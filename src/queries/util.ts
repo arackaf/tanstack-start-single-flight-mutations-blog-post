@@ -20,14 +20,11 @@ export const revalidatedQueryOptions = <T, U>(
 
       return result;
     },
-    meta:
-      typeof window === "object"
-        ? {
-            __revalidate: {
-              serverFn,
-              args
-            }
-          }
-        : undefined
+    meta: {
+      __revalidate: {
+        serverFn,
+        args
+      }
+    }
   });
 };
