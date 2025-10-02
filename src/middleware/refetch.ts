@@ -76,10 +76,12 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
 
       console.log("result", result.context);
 
+      // @ts-expect-error
       for (const invalidate of result.context?.invalidate ?? []) {
         queryClient.invalidateQueries({ queryKey: invalidate, exact: true });
       }
 
+      // @ts-expect-error
       Object.entries(result.context?.payloads ?? {}).forEach(([jsonKey, value]) => {
         const key = JSON.parse(jsonKey);
         queryClient.setQueryData(key, value, { updatedAt: Date.now() });
