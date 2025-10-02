@@ -1,5 +1,5 @@
-import { createMiddleware } from "@tanstack/react-start";
-import { QueryKey, hashKey, partialMatchKey } from "@tanstack/react-query";
+import { createMiddleware, getRouterInstance } from "@tanstack/react-start";
+import { QueryClient, QueryKey, hashKey, partialMatchKey } from "@tanstack/react-query";
 
 type RevalidationPayload = {
   invalidate: any[];
@@ -17,8 +17,9 @@ type RefetchMiddlewareConfig = {
 };
 export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
   createMiddleware({ type: "function" })
-    .client(async ({ next, router }) => {
-      debugger;
+    .client(async ({ next }) => {
+      const router = await getRouterInstance();
+
       const { refetch = [], refetchIfActive = [], invalidate = [] } = config;
 
       const revalidate: RevalidationPayload = {
@@ -27,7 +28,7 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       };
       const allKeys = [...refetch, ...refetchIfActive, ...invalidate];
 
-      const queryClient = router.options.context.queryClient;
+      const queryClient: QueryClient = router.options.context.queryClient;
       const cache = queryClient.getQueryCache();
 
       const allQueriesFound = [

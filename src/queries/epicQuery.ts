@@ -7,6 +7,6 @@ export const epicQueryOptions = (id: string | number) => {
 
   return revalidatedQueryOptions(["epic", id], getEpic, id, {
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5
+    gcTime: 1000 * 60 * 5,
   });
 };
