@@ -16,9 +16,7 @@ export const revalidatedQueryOptions = <T, U>(
     ...otherQueryOptions,
     queryKey: [...prefixKeyArr, args],
     queryFn: async () => {
-      const result = await serverFn({ data: args });
-
-      return result;
+      return serverFn({ data: args });
     },
     meta: {
       __revalidate: {
