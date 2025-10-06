@@ -6,7 +6,7 @@ type OtherQueryOptions = Omit<AnyUseQueryOptions, "queryKey" | "queryFn" | "meta
 
 export const revalidatedQueryOptions = <T, U>(
   prefixKey: QueryKey,
-  serverFn: RequiredFetcher<any, T, U>,
+  serverFn: RequiredFetcher<any, T, U, "data">,
   args: Expand<IntersectAllValidatorInputs<any, T>>,
   otherQueryOptions: OtherQueryOptions
 ) => {
