@@ -5,7 +5,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { epicQueryOptions } from "@/queries/epicQuery";
-import { updateEpic } from "@/serverFn/epics";
+import { updateEpic, updateEpicWithRedirect } from "@/serverFn/epics";
 
 export const Route = createFileRoute("/app/epics/$epicId/edit")({
   component: EditEpic,
@@ -30,7 +30,7 @@ function EditEpic() {
 
   //const queryClient = useQueryClient();
 
-  const runSave = useServerFn(updateEpic);
+  const runSave = useServerFn(updateEpicWithRedirect);
   // @ts-ignore
   const navigate = useNavigate();
 
@@ -38,12 +38,14 @@ function EditEpic() {
     console.log("HELLO");
     setSaving(true);
 
-    const result: any = await runSave({
-      data: {
-        id: epic.id,
-        name: newName.current!.value
-      }
-    });
+    try {
+      const result: any = await runSave({
+        data: {
+          id: epic.id,
+          name: newName.current!.value
+        }
+      });
+    } catch (er) {}
 
     console.log({ result });
 

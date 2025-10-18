@@ -1,8 +1,10 @@
+import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
 import { refetchMiddleware } from "@/middleware/refetch";
+import { epicsListRefetchMiddleware } from "@/middleware/refetch-simple";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .inputValidator((page: number) => page)
@@ -58,7 +60,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
     return milestones;
   });
 
-export const updateEpic = createServerFn({ method: "GET" })
+export const updateEpic = createServerFn({ method: "POST" })
   .middleware([
     refetchMiddleware({
       invalidate: [["epics", "list"]],
@@ -70,4 +72,14 @@ export const updateEpic = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
+  });
+
+export const updateEpicWithRedirect = createServerFn({ method: "POST" })
+  .middleware([epicsListRefetchMiddleware])
+  .inputValidator((obj: { id: number; name: string }) => obj)
+  .handler(async ({ data }) => {
+    await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
+    await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
+
+    throw redirect({ to: "/app/epics", search: { page: 1 } });
   });
