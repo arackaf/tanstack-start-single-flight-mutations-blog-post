@@ -4,9 +4,7 @@ import { getTasksOverview } from "@/serverFn/tasks";
 
 export const Route = createFileRoute("/app/tasks")({
   component: TasksLayout,
-  loader: async ({ context }) => {
-    const now = +new Date();
-    console.log(`/tasks route loader. Loading task layout info at + ${now - context.timestarted}ms since start`);
+  loader: async () => {
     const tasksOverview = await getTasksOverview();
     return { tasksOverview };
   },

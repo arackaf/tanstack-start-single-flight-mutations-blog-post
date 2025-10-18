@@ -3,14 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { getTask } from "../../serverFn/tasks";
 
 export const Route = createFileRoute("/app/tasks/$taskId/")({
-  loader: async ({ params, context }) => {
+  loader: async ({ params }) => {
     const { taskId } = params;
 
     if (taskId == "22") {
       throw new Error("I don't want to");
     }
-    const now = +new Date();
-    console.log(`/tasks/${taskId} path loader. Loading at + ${now - context.timestarted}ms since start`);
+
     const task = getTask({ data: taskId });
 
     return { task };
@@ -38,7 +37,7 @@ function TaskView() {
           Task {task.id} {isFetching ? "Loading ..." : null}
         </div>
         <h1 className="text-lg">{task.title}</h1>
-        <Link className="text-blue-500 underline" to="/app/tasks/$taskId/edit" params={{ taskId: task.id }}>
+        <Link className="text-blue-500 underline" to="/app/tasks/$taskId/edit" params={{ taskId: String(task.id) }}>
           Edit
         </Link>
         <div />
