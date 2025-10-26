@@ -45,9 +45,8 @@ function EditEpic() {
           name: newName.current!.value
         }
       });
+      console.log({ result });
     } catch (er) {}
-
-    console.log({ result });
 
     //const listOptions = epicsQueryOptions(1);
 
