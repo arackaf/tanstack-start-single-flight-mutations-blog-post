@@ -81,5 +81,5 @@ export const updateEpicWithRedirect = createServerFn({ method: "POST" })
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
 
-    //throw redirect({ to: "/app/epics", search: { page: 1 } });
+    throw redirect({ to: "/app/epics", search: { page: 1 } });
   });

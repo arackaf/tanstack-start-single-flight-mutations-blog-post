@@ -35,7 +35,7 @@ function EditEpic() {
   const navigate = useNavigate();
 
   const save = async () => {
-    console.log("HELLO");
+    console.log("Starting save");
     setSaving(true);
 
     try {
@@ -45,7 +45,7 @@ function EditEpic() {
           name: newName.current!.value
         }
       });
-      console.log({ result });
+      console.log("EDIT PAGE", { result });
     } catch (er) {}
 
     //const listOptions = epicsQueryOptions(1);
