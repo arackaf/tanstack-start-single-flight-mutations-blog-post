@@ -63,9 +63,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
 export const updateEpic = createServerFn({ method: "POST" })
   .middleware([
     refetchMiddleware({
-      invalidate: [["epics", "list"]],
-      refetch: [["epics", "list", 1]],
-      refetchIfActive: [["epic"]]
+      refetch: [["epics"], ["epic"]]
     })
   ])
   .inputValidator((obj: { id: number; name: string }) => obj)

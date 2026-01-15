@@ -12,56 +12,44 @@ type RevalidationPayload = {
 
 type RefetchMiddlewareConfig = {
   refetch?: QueryKey[];
-  refetchIfActive?: QueryKey[];
-  invalidate?: QueryKey[];
 };
 export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
   createMiddleware({ type: "function" })
     .client(async ({ next }) => {
       const router = await getRouterInstance();
 
-      const { refetch = [], refetchIfActive = [], invalidate = [] } = config;
+      const { refetch = [] } = config;
 
       const revalidate: RevalidationPayload = {
         invalidate: [],
-        refetch: [],
+        refetch: []
       };
-      const allKeys = [...refetch, ...refetchIfActive, ...invalidate];
 
       const queryClient: QueryClient = router.options.context.queryClient;
       const cache = queryClient.getQueryCache();
 
       const allQueriesFound = [
         ...new Map(
-          allKeys.flatMap((key) => queryClient.getQueriesData({ queryKey: key, exact: false }).map((entry) => [hashKey(entry[0]), entry]))
-        ).values(),
+          refetch.flatMap(key =>
+            queryClient.getQueriesData({ queryKey: key, exact: false }).map(entry => [hashKey(entry[0]), entry])
+          )
+        ).values()
       ];
 
       console.log({ allQueriesFound });
-      allQueriesFound.forEach((query) => {
+      allQueriesFound.forEach(query => {
         const key = query[0];
         const entry = cache.find({ queryKey: key, exact: true });
         const isActive = !!entry?.observers?.length;
         const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
 
-        console.log({ key: key.join("-"), isActive });
-        console.log({ keyHashed: hashKey(key) });
-
         if (revalidatePayload) {
-          if (refetch.some((refetchKey) => partialMatchKey(key, refetchKey))) {
+          if (isActive && refetch.some(refetchKey => partialMatchKey(key, refetchKey))) {
             revalidate.refetch.push({
               key,
               fn: revalidatePayload.serverFn,
-              args: revalidatePayload.args,
+              args: revalidatePayload.args
             });
-          } else if (isActive && refetchIfActive.some((refetchKey) => partialMatchKey(key, refetchKey))) {
-            revalidate.refetch.push({
-              key,
-              fn: revalidatePayload.serverFn,
-              args: revalidatePayload.args,
-            });
-          } else {
-            revalidate.invalidate.push(key);
           }
         } else {
           revalidate.invalidate.push(key);
@@ -70,8 +58,8 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
 
       const result = await next({
         sendContext: {
-          revalidate,
-        },
+          revalidate
+        }
       });
 
       console.log("result", result.context);
@@ -93,11 +81,12 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       const result = await next({
         sendContext: {
           payloads: {} as any,
-          invalidate: [] as any[],
-        },
+          invalidate: [] as any[]
+        }
       });
 
       for (const refetchPayload of context.revalidate.refetch) {
+        // TODO: make parallel
         const results = await refetchPayload.fn({ data: refetchPayload.args });
         console.log({ key: refetchPayload.key, results });
 
