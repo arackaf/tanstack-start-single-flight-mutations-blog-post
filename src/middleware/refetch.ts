@@ -39,6 +39,7 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       console.log({ allQueriesFound });
       allQueriesFound.forEach(query => {
         const key = query[0];
+
         const entry = cache.find({ queryKey: key, exact: true });
         const isActive = !!entry?.observers?.length;
         const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
@@ -56,6 +57,8 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         }
       });
 
+      console.log({ revalidate });
+
       const result = await next({
         sendContext: {
           revalidate
@@ -70,27 +73,33 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       }
 
       // @ts-expect-error
-      Object.entries(result.context?.payloads ?? {}).forEach(([jsonKey, value]) => {
-        const key = JSON.parse(jsonKey);
-        queryClient.setQueryData(key, value, { updatedAt: Date.now() });
-      });
+
+      for (const entry of result.context?.payloads ?? []) {
+        queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
+      }
 
       return result;
     })
     .server(async ({ next, context }) => {
       const result = await next({
         sendContext: {
-          payloads: {} as any,
+          payloads: [] as any[],
           invalidate: [] as any[]
         }
       });
 
       for (const refetchPayload of context.revalidate.refetch) {
         // TODO: make parallel
-        const results = await refetchPayload.fn({ data: refetchPayload.args });
-        console.log({ key: refetchPayload.key, results });
+        const result = await refetchPayload.fn({ data: refetchPayload.args });
 
-        result.sendContext.payloads[JSON.stringify(refetchPayload.key)] = results;
+        console.log({ key: refetchPayload.key });
+        console.log({ json: JSON.stringify(refetchPayload.key) });
+
+        result.sendContext.payloads.push({
+          key: refetchPayload.key,
+          result
+        });
+        console.log("Payload", result.sendContext.payloads);
       }
       result.sendContext.invalidate.push(...context.revalidate.invalidate);
 

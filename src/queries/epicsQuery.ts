@@ -3,13 +3,20 @@ import { queryOptions } from "../lib/queryOptions";
 import { revalidatedQueryOptions } from "./util";
 
 export const epicsQueryOptions = (page: number) => {
-  return revalidatedQueryOptions(["epics", "list"], getEpicsList, page, {
+  return revalidatedQueryOptions(["epics", "list"], getEpicsList, [page], {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5
   });
 };
 
 export const epicsCountQueryOptions = () => {
+  return revalidatedQueryOptions(["epics", "count"], getEpicsCount, [], {
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5
+  });
+};
+
+export const backup__epicsCountQueryOptions = () => {
   return queryOptions({
     queryKey: ["epics", "count"],
     queryFn: async () => {

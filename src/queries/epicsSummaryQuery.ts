@@ -1,5 +1,5 @@
-import { queryOptions } from "@tanstack/react-query";
 import { getEpicsOverview } from "@/serverFn/epics";
+import { revalidatedQueryOptions } from "./util";
 
 export type EpicOverview = {
   name: string;
@@ -7,12 +7,7 @@ export type EpicOverview = {
 };
 
 export const epicsSummaryQueryOptions = () => {
-  return queryOptions({
-    queryKey: ["epics", "summary"],
-    queryFn: async () => {
-      const epicsOverview = await getEpicsOverview();
-      return { epicsOverview };
-    },
+  return revalidatedQueryOptions(["epics", "summary"], getEpicsOverview, [], {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5
   });

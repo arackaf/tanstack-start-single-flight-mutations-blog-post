@@ -13,13 +13,13 @@ export const Route = createFileRoute("/app/epics")({
 });
 
 function EpicLayout() {
-  const { data } = useSuspenseQuery(epicsSummaryQueryOptions());
+  const { data: epicsOverview } = useSuspenseQuery(epicsSummaryQueryOptions());
 
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-2xl">Epics overview</h2>
       <div className="self-start inline-grid grid-cols-[auto_auto] gap-x-12 items-center p-3">
-        {data.epicsOverview.map(epic => (
+        {epicsOverview.map(epic => (
           <Fragment key={epic.name}>
             <div className="font-bold">{epic.name}</div>
             <div className="justify-self-end">{epic.count}</div>
