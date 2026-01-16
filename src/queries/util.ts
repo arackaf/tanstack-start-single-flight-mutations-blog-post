@@ -14,7 +14,7 @@ export function revalidatedQueryOptions<T, U>(
 
   return queryOptions<U>({
     ...otherQueryOptions,
-    queryKey: [...prefixKeyArr, args],
+    queryKey: [...prefixKeyArr, ...args],
     queryFn: async (): Promise<U> => {
       // return serverFn({ data: args });
       if (args.length === 0) {
