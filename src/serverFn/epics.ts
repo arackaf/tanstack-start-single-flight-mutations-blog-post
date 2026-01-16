@@ -31,7 +31,7 @@ export const getEpicsCount = createServerFn({ method: "GET" }).handler(async ({}
   return { count };
 });
 
-export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async ({}) => {
+export const getEpicsSummary = createServerFn({ method: "GET" }).handler(async ({}) => {
   const subQuery = db
     .select({ epicId: epicsTable.id, count: count().as("count") })
     .from(epicsTable)
@@ -59,6 +59,17 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
       .where(eq(milestonesTable.epicId, data))
       .orderBy(milestonesTable.id);
     return milestones;
+  });
+
+export const updateWithSimpleRefetch = createServerFn({ method: "POST" })
+  .inputValidator((obj: { id: number; name: string }) => obj)
+  .handler(async ({ data }) => {
+    await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
+    await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
+
+    const [epicsList, epicsSummaryData] = await Promise.all([getEpicsList({ data: 1 }), getEpicsSummary()]);
+
+    return { epicsList, epicsSummaryData };
   });
 
 export const updateEpic = createServerFn({ method: "POST" })

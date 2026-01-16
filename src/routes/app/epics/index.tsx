@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { updateEpic } from "@/serverFn/epics";
+import { updateEpic, updateWithSimpleRefetch } from "@/serverFn/epics";
 import { useServerFn } from "@tanstack/react-start";
 
 import { epicsCountQueryOptions, epicsQueryOptions } from "../../../queries/epicsQuery";
@@ -24,12 +24,29 @@ interface EpicItemProps {
 function EpicItem({ epic }: EpicItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const runSave = useServerFn(updateEpic);
+  const runSaveFinal = useServerFn(updateEpic);
+  const runSaveSimple = useServerFn(updateWithSimpleRefetch);
 
-  const handleSave = async () => {
+  const handleSaveSimple = async () => {
     try {
       const newValue = inputRef.current?.value || "";
-      await runSave({
+      const result = await runSaveSimple({
+        data: {
+          id: epic.id,
+          name: newValue
+        }
+      });
+
+      console.log({ result });
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
+  const handleSaveFinal = async () => {
+    try {
+      const newValue = inputRef.current?.value || "";
+      await runSaveFinal({
         data: {
           id: epic.id,
           name: newValue
@@ -59,7 +76,10 @@ function EpicItem({ epic }: EpicItemProps) {
       </Link>
       {isEditing ? (
         <div className="flex gap-1">
-          <button onClick={handleSave} className="border p-1 rounded bg-green-100">
+          <button onClick={handleSaveSimple} className="border p-1 rounded bg-green-100">
+            Save Simple
+          </button>
+          <button onClick={handleSaveFinal} className="border p-1 rounded bg-green-100 hidden">
             Save
           </button>
           <button onClick={handleCancel} className="border p-1 rounded">
