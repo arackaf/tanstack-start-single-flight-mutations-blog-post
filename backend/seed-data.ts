@@ -9,14 +9,14 @@ export const epics = [
   { id: 2, title: "Learn TypeScript" },
   { id: 3, title: "Implement New Authentication" },
   { id: 4, title: "Learn Java" },
-  { id: 5, title: "Dummy Epic 1" },
-  { id: 6, title: "Dummy Epic 2" },
-  { id: 7, title: "Dummy Epic 3" },
-  { id: 8, title: "Dummy Epic 4" },
-  { id: 9, title: "Dummy Epic 5" },
-  { id: 10, title: "Dummy Epic 6" },
-  { id: 11, title: "Dummy Epic 7" },
-  { id: 12, title: "Dummy Epic 8" }
+  { id: 5, title: "Scala" },
+  { id: 6, title: "Switch to Better Auth" },
+  { id: 7, title: "Perform security audit" },
+  { id: 8, title: "Write documentation" },
+  { id: 9, title: "XXX Dummy Epic 5" },
+  { id: 10, title: "XXX Dummy Epic 6" },
+  { id: 11, title: "XXX Dummy Epic 7" },
+  { id: 12, title: "XXX Dummy Epic 8" }
 ];
 
 export const milestones = [
@@ -65,5 +65,13 @@ export const tasks = [
   { name: "Review classic Java", epicId: 4, userId: 1 },
   { name: "Asynchrony with Futures", epicId: 4, userId: 1 },
   { name: "Data processing with Streams", epicId: 4, userId: 1 },
-  { name: "Data transfer with Records", epicId: 4, userId: 1 }
+  { name: "Data transfer with Records", epicId: 4, userId: 1 },
+
+  // Epic 4 - Learn Java
+  { name: "Learn basic syntax", epicId: 5, userId: 1 },
+  { name: "Learn FP concepts", epicId: 5, userId: 1 },
+
+  // Epic 4 - Move to better auth
+  { name: "Review docs", epicId: 6, userId: 1 },
+  { name: "Review docs", epicId: 6, userId: 1 }
 ];

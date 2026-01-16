@@ -2,7 +2,7 @@ import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
-import { asc, count, eq } from "drizzle-orm";
+import { asc, count, desc, eq } from "drizzle-orm";
 import { refetchMiddleware } from "@/middleware/refetch";
 import { epicsListRefetchMiddleware } from "@/middleware/refetch-simple";
 
@@ -13,6 +13,7 @@ export const getEpicsList = createServerFn({ method: "GET" })
     const epics = await db
       .select()
       .from(epicsTable)
+      .orderBy(asc(epicsTable.name))
       .offset((data - 1) * 4)
       .limit(4);
     return epics;
@@ -43,7 +44,7 @@ export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async 
     .select({ id: epicsTable.id, name: epicsTable.name, count: subQuery.count })
     .from(epicsTable)
     .innerJoin(subQuery, eq(epicsTable.id, subQuery.epicId))
-    .orderBy(asc(subQuery.count));
+    .orderBy(desc(subQuery.count));
 
   const results = await query;
   return results;
