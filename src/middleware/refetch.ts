@@ -1,5 +1,5 @@
 import { createMiddleware, getRouterInstance } from "@tanstack/react-start";
-import { QueryClient, QueryKey, hashKey, partialMatchKey } from "@tanstack/react-query";
+import { QueryClient, QueryKey, partialMatchKey } from "@tanstack/react-query";
 
 type RevalidationPayload = {
   invalidate: any[];
