@@ -44,12 +44,16 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
 
         if (revalidatePayload) {
-          if (isActive && refetch.some(refetchKey => partialMatchKey(key, refetchKey))) {
-            revalidate.refetch.push({
-              key,
-              fn: revalidatePayload.serverFn,
-              args: revalidatePayload.args
-            });
+          if (refetch.some(refetchKey => partialMatchKey(key, refetchKey))) {
+            if (isActive) {
+              revalidate.refetch.push({
+                key,
+                fn: revalidatePayload.serverFn,
+                args: revalidatePayload.args
+              });
+            } else {
+              revalidate.invalidate.push(key);
+            }
           }
         } else {
           revalidate.invalidate.push(key);
