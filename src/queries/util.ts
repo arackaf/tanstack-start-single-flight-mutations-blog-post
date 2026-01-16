@@ -4,10 +4,17 @@ import { Expand } from "@tanstack/react-router";
 
 type OtherQueryOptions = Omit<AnyUseQueryOptions, "queryKey" | "queryFn" | "meta">;
 
+type ServerFnArgs<TServerFn extends RequiredFetcher<any, any, any>> =
+  TServerFn extends RequiredFetcher<any, infer TArgs, any>
+    ? TArgs extends undefined
+      ? []
+      : [Expand<IntersectAllValidatorInputs<any, TArgs>>]
+    : never;
+
 export function revalidatedQueryOptions<T, U>(
   prefixKey: QueryKey,
   serverFn: RequiredFetcher<any, T, Promise<U>>,
-  args: T extends undefined ? [] : [Expand<IntersectAllValidatorInputs<any, T>>],
+  args: ServerFnArgs<RequiredFetcher<any, T, Promise<U>>>,
   otherQueryOptions?: OtherQueryOptions
 ) {
   const prefixKeyArr = Array.isArray(prefixKey) ? prefixKey : [prefixKey];
