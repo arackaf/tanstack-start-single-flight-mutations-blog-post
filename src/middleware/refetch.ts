@@ -36,7 +36,6 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         ).values()
       ];
 
-      console.log({ allQueriesFound });
       allQueriesFound.forEach(query => {
         const key = query[0];
 
@@ -57,15 +56,11 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         }
       });
 
-      console.log({ revalidate });
-
       const result = await next({
         sendContext: {
           revalidate
         }
       });
-
-      console.log("result", result.context);
 
       // @ts-expect-error
       for (const invalidate of result.context?.invalidate ?? []) {
@@ -73,7 +68,6 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       }
 
       // @ts-expect-error
-
       for (const entry of result.context?.payloads ?? []) {
         queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
       }
@@ -90,16 +84,12 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
 
       for (const refetchPayload of context.revalidate.refetch) {
         // TODO: make parallel
-        const result = await refetchPayload.fn({ data: refetchPayload.args });
-
-        console.log({ key: refetchPayload.key });
-        console.log({ json: JSON.stringify(refetchPayload.key) });
+        const serverFnResult = await refetchPayload.fn({ data: refetchPayload.args });
 
         result.sendContext.payloads.push({
           key: refetchPayload.key,
-          result
+          result: serverFnResult
         });
-        console.log("Payload", result.sendContext.payloads);
       }
       result.sendContext.invalidate.push(...context.revalidate.invalidate);
 
