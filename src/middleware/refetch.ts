@@ -28,13 +28,7 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       const queryClient: QueryClient = router.options.context.queryClient;
       const cache = queryClient.getQueryCache();
 
-      const allQueriesFound = [
-        ...new Map(
-          refetch.flatMap(key =>
-            queryClient.getQueriesData({ queryKey: key, exact: false }).map(entry => [hashKey(entry[0]), entry])
-          )
-        ).values()
-      ];
+      const allQueriesFound = refetch.flatMap(key => queryClient.getQueriesData({ queryKey: key, exact: false }));
 
       allQueriesFound.forEach(query => {
         const key = query[0];
@@ -43,20 +37,16 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
         const isActive = !!entry?.observers?.length;
         const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
 
-        if (revalidatePayload) {
-          if (refetch.some(refetchKey => partialMatchKey(key, refetchKey))) {
-            if (isActive) {
-              revalidate.refetch.push({
-                key,
-                fn: revalidatePayload.serverFn,
-                args: revalidatePayload.args
-              });
-            } else {
-              revalidate.invalidate.push(key);
-            }
+        if (refetch.some(refetchKey => partialMatchKey(key, refetchKey))) {
+          if (isActive && revalidatePayload) {
+            revalidate.refetch.push({
+              key,
+              fn: revalidatePayload.serverFn,
+              args: revalidatePayload.args
+            });
+          } else {
+            revalidate.invalidate.push(key);
           }
-        } else {
-          revalidate.invalidate.push(key);
         }
       });
 
