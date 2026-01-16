@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { updateEpic, updateWithSimpleRefetch } from "@/serverFn/epics";
@@ -7,6 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { epicsCountQueryOptions, epicsQueryOptions } from "../../../queries/epicsQuery";
 import { useDeferredValue, useState, useRef } from "react";
 import { Fragment } from "react/jsx-runtime";
+import { epicsSummaryQueryOptions } from "@/queries/epicsSummaryQuery";
 
 type SearchParams = {
   page: number;
@@ -26,21 +27,21 @@ function EpicItem({ epic }: EpicItemProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const runSaveFinal = useServerFn(updateEpic);
   const runSaveSimple = useServerFn(updateWithSimpleRefetch);
+  const queryClient = useQueryClient();
 
   const handleSaveSimple = async () => {
-    try {
-      const newValue = inputRef.current?.value || "";
-      const result = await runSaveSimple({
-        data: {
-          id: epic.id,
-          name: newValue
-        }
-      });
+    const newValue = inputRef.current?.value || "";
+    const result = await runSaveSimple({
+      data: {
+        id: epic.id,
+        name: newValue
+      }
+    });
 
-      console.log({ result });
-    } finally {
-      setIsEditing(false);
-    }
+    queryClient.setQueryData(epicsQueryOptions(1).queryKey, result.epicsList, { updatedAt: Date.now() });
+    queryClient.setQueryData(epicsSummaryQueryOptions().queryKey, result.epicsSummaryData, { updatedAt: Date.now() });
+
+    setIsEditing(false);
   };
 
   const handleSaveFinal = async () => {
