@@ -111,11 +111,13 @@ export const refetchMiddleware = createMiddleware({ type: "function" })
 
       const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
 
-      revalidate.refetch.push({
-        key,
-        fn: revalidatePayload.serverFn,
-        arg: revalidatePayload.arg
-      });
+      if (revalidatePayload) {
+        revalidate.refetch.push({
+          key,
+          fn: revalidatePayload.serverFn,
+          arg: revalidatePayload.arg
+        });
+      }
     });
 
     const result = await next({
@@ -123,11 +125,6 @@ export const refetchMiddleware = createMiddleware({ type: "function" })
         revalidate
       }
     });
-
-    // @ts-expect-error
-    for (const invalidate of result.context?.invalidate ?? []) {
-      queryClient.invalidateQueries({ queryKey: invalidate, exact: true });
-    }
 
     // @ts-expect-error
     for (const entry of result.context?.payloads ?? []) {
@@ -139,8 +136,7 @@ export const refetchMiddleware = createMiddleware({ type: "function" })
   .server(async ({ next, context }) => {
     const result = await next({
       sendContext: {
-        payloads: [] as any[],
-        invalidate: [] as any[]
+        payloads: [] as any[]
       }
     });
 

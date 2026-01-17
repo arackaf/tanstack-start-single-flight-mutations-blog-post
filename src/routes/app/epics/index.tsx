@@ -50,7 +50,11 @@ function EpicItem({ epic }: EpicItemProps) {
       await runSaveFinal({
         data: {
           id: epic.id,
-          name: newValue
+          name: newValue,
+          refetch: [
+            ["epics", "list", 1],
+            ["epics", "summary"]
+          ]
         }
       });
     } finally {
