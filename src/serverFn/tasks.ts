@@ -33,3 +33,45 @@ export const updateTask = createServerFn({ method: "POST" })
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(tasksTable).set({ title: data.name }).where(eq(tasksTable.id, data.id));
   });
+
+const noArgs = createServerFn({ method: "POST" }).handler(async () => {});
+const args = createServerFn({ method: "POST" })
+  .inputValidator((obj: string) => obj)
+  .handler(async () => {});
+
+type AnyFn = (...args: any[]) => any;
+type ServerFnArgs<TFn extends AnyFn> = Parameters<TFn>[0] extends infer TRootArgs
+  ? TRootArgs extends { data: infer TResult }
+    ? TResult
+    : undefined
+  : never;
+
+type ServerFnHasArgs<TFn extends AnyFn> =
+  ServerFnArgs<TFn> extends infer U ? (U extends undefined ? false : true) : false;
+
+type ServerFnWithArgs<TFn extends AnyFn> = ServerFnHasArgs<TFn> extends true ? TFn : never;
+type ServerFnWithoutArgs<TFn extends AnyFn> = ServerFnHasArgs<TFn> extends false ? TFn : never;
+
+type Test = ServerFnHasArgs<typeof noArgs>;
+//    ^?
+type Test2 = ServerFnHasArgs<typeof args>;
+//    ^?
+
+function foo<TFn extends AnyFn>(_serverFn: ServerFnWithArgs<TFn>, arg: ServerFnArgs<TFn>): number;
+function foo<TFn extends AnyFn>(_serverFn: ServerFnWithoutArgs<TFn>): number;
+function foo<TFn extends AnyFn>(_serverFn: ServerFnWithoutArgs<TFn> | ServerFnWithArgs<TFn>, _arg?: ServerFnArgs<TFn>) {
+  return 0;
+}
+
+foo(noArgs);
+
+// @ts-expect-error
+foo(noArgs, "hello");
+
+// @ts-expect-error
+foo(args);
+
+foo(args, "hello");
+
+// @ts-expect-error
+foo(args, 12);
