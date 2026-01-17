@@ -2,18 +2,15 @@ import { createMiddleware, getRouterInstance } from "@tanstack/react-start";
 import { QueryClient, QueryKey, partialMatchKey } from "@tanstack/react-query";
 
 type RevalidationPayload = {
-  invalidate: any[];
+  // invalidate?: any[];
   refetch: {
     key: any;
     fn: any;
-    args: any;
+    arg: any;
   }[];
 };
 
-type RefetchMiddlewareConfig = {
-  refetch?: QueryKey[];
-};
-export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
+export const refetchMiddleware_final = (config: RefetchMiddlewareConfig) =>
   createMiddleware({ type: "function" })
     .client(async ({ next }) => {
       const router = await getRouterInstance();
@@ -21,7 +18,6 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       const { refetch = [] } = config;
 
       const revalidate: RevalidationPayload = {
-        invalidate: [],
         refetch: []
       };
 
@@ -29,6 +25,8 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
       const cache = queryClient.getQueryCache();
 
       const allQueriesFound = refetch.flatMap(key => queryClient.getQueriesData({ queryKey: key, exact: false }));
+
+      console.log({ allQueriesFound });
 
       allQueriesFound.forEach(query => {
         const key = query[0];
@@ -42,7 +40,7 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
             revalidate.refetch.push({
               key,
               fn: revalidatePayload.serverFn,
-              args: revalidatePayload.args
+              arg: revalidatePayload.arg
             });
           } else {
             revalidate.invalidate.push(key);
@@ -78,7 +76,7 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
 
       for (const refetchPayload of context.revalidate.refetch) {
         // TODO: make parallel
-        const serverFnResult = await refetchPayload.fn({ data: refetchPayload.args });
+        const serverFnResult = await refetchPayload.fn({ data: refetchPayload.arg });
 
         result.sendContext.payloads.push({
           key: refetchPayload.key,
@@ -89,3 +87,76 @@ export const refetchMiddleware = (config: RefetchMiddlewareConfig) =>
 
       return result;
     });
+
+type RefetchMiddlewareConfig = {
+  refetch: QueryKey[];
+};
+
+export const refetchMiddleware = createMiddleware({ type: "function" })
+  .inputValidator((config?: RefetchMiddlewareConfig) => config)
+  .client(async ({ next, data }) => {
+    const { refetch = [] } = data ?? {};
+
+    const router = await getRouterInstance();
+    const queryClient: QueryClient = router.options.context.queryClient;
+    const cache = queryClient.getQueryCache();
+
+    const revalidate: RevalidationPayload = {
+      refetch: []
+    };
+
+    refetch.forEach((key: QueryKey) => {
+      const entry = cache.find({ queryKey: key, exact: true });
+      if (!entry) return;
+
+      const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
+
+      revalidate.refetch.push({
+        key,
+        fn: revalidatePayload.serverFn,
+        arg: revalidatePayload.arg
+      });
+    });
+
+    const result = await next({
+      sendContext: {
+        revalidate
+      }
+    });
+
+    // @ts-expect-error
+    for (const invalidate of result.context?.invalidate ?? []) {
+      queryClient.invalidateQueries({ queryKey: invalidate, exact: true });
+    }
+
+    // @ts-expect-error
+    for (const entry of result.context?.payloads ?? []) {
+      queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
+    }
+
+    return result;
+  })
+  .server(async ({ next, context }) => {
+    const result = await next({
+      sendContext: {
+        payloads: [] as any[],
+        invalidate: [] as any[]
+      }
+    });
+
+    const allPayloads = context.revalidate.refetch.map(refetchPayload => {
+      return {
+        key: refetchPayload.key,
+        result: refetchPayload.fn({ data: refetchPayload.arg })
+      };
+    });
+
+    for (const refetchPayload of allPayloads) {
+      result.sendContext.payloads.push({
+        key: refetchPayload.key,
+        result: await refetchPayload.result
+      });
+    }
+
+    return result;
+  });

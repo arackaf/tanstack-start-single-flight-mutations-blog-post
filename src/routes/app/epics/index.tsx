@@ -80,8 +80,8 @@ function EpicItem({ epic }: EpicItemProps) {
           <button onClick={handleSaveSimple} className="border p-1 rounded bg-green-100">
             Save Simple
           </button>
-          <button onClick={handleSaveFinal} className="border p-1 rounded bg-green-100 hidden">
-            Save
+          <button onClick={handleSaveFinal} className="border p-1 rounded bg-green-100">
+            Save Final
           </button>
           <button onClick={handleCancel} className="border p-1 rounded">
             Cancel

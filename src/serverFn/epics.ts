@@ -73,11 +73,7 @@ export const updateWithSimpleRefetch = createServerFn({ method: "POST" })
   });
 
 export const updateEpic = createServerFn({ method: "POST" })
-  .middleware([
-    refetchMiddleware({
-      refetch: [["epics"], ["epic"]]
-    })
-  ])
+  .middleware([refetchMiddleware])
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));

@@ -10,13 +10,19 @@ export const epicsQueryOptions = (page: number) => {
       return result;
     },
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5
+    gcTime: 1000 * 60 * 5,
+    meta: {
+      __revalidate: {
+        serverFn: getEpicsList,
+        arg: page
+      }
+    }
   });
 };
 
 export const epicsCountQueryOptions = () => {
   return queryOptions({
-    queryKey: ["epics", "count"],
+    queryKey: ["epics-count"],
     queryFn: async () => {
       const result = await getEpicsCount();
       return result;
@@ -28,7 +34,7 @@ export const epicsCountQueryOptions = () => {
 
 export const backup__epicsCountQueryOptions = () => {
   return queryOptions({
-    queryKey: ["epics", "count"],
+    queryKey: ["epics-count"],
     queryFn: async () => {
       const result = await getEpicsCount();
       return result;

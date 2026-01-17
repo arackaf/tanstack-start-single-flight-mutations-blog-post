@@ -11,27 +11,50 @@ type ServerFnArgs<TServerFn extends RequiredFetcher<any, any, any>> =
       : [Expand<IntersectAllValidatorInputs<any, TArgs>>]
     : never;
 
-export function revalidatedQueryOptions<T, U>(
+export function revalidatedQueryOptionsFinal<T, U>(
   prefixKey: QueryKey,
   serverFn: RequiredFetcher<any, T, Promise<U>>,
-  args: ServerFnArgs<RequiredFetcher<any, T, Promise<U>>>,
+  arg: ServerFnArgs<RequiredFetcher<any, T, Promise<U>>>,
   otherQueryOptions?: OtherQueryOptions
 ) {
   const prefixKeyArr = Array.isArray(prefixKey) ? prefixKey : [prefixKey];
 
   return queryOptions<U>({
     ...otherQueryOptions,
-    queryKey: [...prefixKeyArr, ...args],
+    queryKey: [...prefixKeyArr, ...arg],
     queryFn: async (): Promise<U> => {
-      if (args.length === 0) {
+      if (arg.length === 0) {
         return serverFn({ data: undefined as any });
       }
-      return serverFn({ data: args[0] });
+      return serverFn({ data: arg[0] });
     },
     meta: {
       __revalidate: {
         serverFn,
-        args
+        arg
+      }
+    }
+  });
+}
+
+export function revalidatedQueryOptions<T, U>(
+  prefixKey: QueryKey,
+  serverFn: any,
+  arg: any,
+  otherQueryOptions?: OtherQueryOptions
+) {
+  const prefixKeyArr = Array.isArray(prefixKey) ? prefixKey : [prefixKey];
+
+  return queryOptions<U>({
+    ...otherQueryOptions,
+    queryKey: [...prefixKeyArr, arg],
+    queryFn: async (): Promise<U> => {
+      return serverFn({ data: arg });
+    },
+    meta: {
+      __revalidate: {
+        serverFn,
+        arg
       }
     }
   });

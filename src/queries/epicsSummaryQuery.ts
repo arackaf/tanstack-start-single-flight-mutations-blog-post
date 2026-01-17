@@ -15,6 +15,11 @@ export const epicsSummaryQueryOptions = () => {
       return result;
     },
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5
+    gcTime: 1000 * 60 * 5,
+    meta: {
+      __revalidate: {
+        serverFn: getEpicsSummary
+      }
+    }
   });
 };
