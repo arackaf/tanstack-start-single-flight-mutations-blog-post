@@ -218,12 +218,12 @@ const prelimRefetchMiddleware = createMiddleware({ type: "function" })
 
 export const refetchMiddleware = createMiddleware({ type: "function" })
   .middleware([prelimRefetchMiddleware])
-  .inputValidator((config?: RefetchMiddlewareConfig) => config)
   .client(async ({ next }) => {
+    const result = await next();
+
     const router = await getRouterInstance();
     const queryClient: QueryClient = router.options.context.queryClient;
 
-    const result = await next();
 
     for (const entry of result.context?.payloads ?? []) {
       queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
