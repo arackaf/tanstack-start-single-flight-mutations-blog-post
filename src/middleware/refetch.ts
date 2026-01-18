@@ -2,7 +2,6 @@ import { createMiddleware, getRouterInstance } from "@tanstack/react-start";
 import { QueryClient, QueryKey, partialMatchKey } from "@tanstack/react-query";
 
 type RevalidationPayload = {
-  // invalidate?: any[];
   refetch: {
     key: any;
     fn: any;
@@ -43,7 +42,7 @@ export const refetchMiddleware_final = (config: RefetchMiddlewareConfig) =>
               arg: revalidatePayload.arg
             });
           } else {
-            revalidate.invalidate.push(key);
+            // revalidate.invalidate.push(key);
           }
         }
       });
@@ -83,7 +82,7 @@ export const refetchMiddleware_final = (config: RefetchMiddlewareConfig) =>
           result: serverFnResult
         });
       }
-      result.sendContext.invalidate.push(...context.revalidate.invalidate);
+      // result.sendContext.invalidate.push(...context.revalidate.invalidate);
 
       return result;
     });
@@ -157,7 +156,6 @@ export const old_refetchMiddleware = createMiddleware({ type: "function" })
     return result;
   });
 
-
 const prelimRefetchMiddleware = createMiddleware({ type: "function" })
   .inputValidator((config?: RefetchMiddlewareConfig) => config)
   .client(async ({ next, data }) => {
@@ -170,25 +168,34 @@ const prelimRefetchMiddleware = createMiddleware({ type: "function" })
     const revalidate: RevalidationPayload = {
       refetch: []
     };
+    const invalidate: any[] = [];
 
-    refetch.forEach((key: QueryKey) => {
+    const allQueriesFound = refetch.flatMap(key => queryClient.getQueriesData({ queryKey: key, exact: false }));
+
+    allQueriesFound.forEach(query => {
+      const key = query[0];
+
       const entry = cache.find({ queryKey: key, exact: true });
-      if (!entry) return;
-
+      const isActive = !!entry?.observers?.length;
       const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
 
-      if (revalidatePayload) {
+      if (isActive && revalidatePayload) {
         revalidate.refetch.push({
           key,
           fn: revalidatePayload.serverFn,
           arg: revalidatePayload.arg
         });
+      } else {
+        invalidate.push(key);
       }
     });
 
     return await next({
       sendContext: {
         revalidate
+      },
+      context: {
+        invalidate
       }
     });
   })
@@ -224,10 +231,15 @@ export const refetchMiddleware = createMiddleware({ type: "function" })
     const router = await getRouterInstance();
     const queryClient: QueryClient = router.options.context.queryClient;
 
-
     for (const entry of result.context?.payloads ?? []) {
       queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
     }
+    for (const entry of result.context?.invalidate ?? []) {
+      queryClient.invalidateQueries({ queryKey: entry, exact: true });
+    }
+
+    // give our react-query cache a chance to update
+    await new Promise(resolve => setTimeout(resolve, 1));
 
     return result;
   });

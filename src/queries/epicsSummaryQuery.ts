@@ -9,17 +9,8 @@ export type EpicOverview = {
 
 export const epicsSummaryQueryOptions = () => {
   return queryOptions({
-    queryKey: ["epics", "summary"],
-    queryFn: async () => {
-      const result = await getEpicsSummary();
-      return result;
-    },
+    ...revalidatedQueryOptions(["epics", "list", "summary"], getEpicsSummary),
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
-    meta: {
-      __revalidate: {
-        serverFn: getEpicsSummary
-      }
-    }
+    gcTime: 1000 * 60 * 5
   });
 };

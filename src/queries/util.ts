@@ -37,18 +37,14 @@ export function revalidatedQueryOptionsFinal<T, U>(
   });
 }
 
-export function revalidatedQueryOptions<T, U>(
-  prefixKey: QueryKey,
-  serverFn: any,
-  arg: any,
-  otherQueryOptions?: OtherQueryOptions
-) {
-  const prefixKeyArr = Array.isArray(prefixKey) ? prefixKey : [prefixKey];
-
-  return queryOptions<U>({
-    ...otherQueryOptions,
-    queryKey: [...prefixKeyArr, arg],
-    queryFn: async (): Promise<U> => {
+export function revalidatedQueryOptions(queryKey: QueryKey, serverFn: any, arg?: any) {
+  const queryKeyToUse = [...queryKey];
+  if (arg != null) {
+    queryKeyToUse.push(arg);
+  }
+  return queryOptions({
+    queryKey: queryKeyToUse,
+    queryFn: async () => {
       return serverFn({ data: arg });
     },
     meta: {

@@ -51,10 +51,7 @@ function EpicItem({ epic }: EpicItemProps) {
         data: {
           id: epic.id,
           name: newValue,
-          refetch: [
-            ["epics", "list", 1],
-            ["epics", "summary"]
-          ]
+          refetch: [["epics", "list"]]
         }
       });
     } finally {
