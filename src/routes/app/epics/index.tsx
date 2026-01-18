@@ -25,7 +25,7 @@ interface EpicItemProps {
 function EpicItem({ epic }: EpicItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const runSaveFinal = useServerFn(updateEpic);
+  const runSave = useServerFn(updateEpic);
   const runSaveSimple = useServerFn(updateWithSimpleRefetch);
   const queryClient = useQueryClient();
 
@@ -47,7 +47,7 @@ function EpicItem({ epic }: EpicItemProps) {
   const handleSaveFinal = async () => {
     try {
       const newValue = inputRef.current?.value || "";
-      await runSaveFinal({
+      await runSave({
         data: {
           id: epic.id,
           name: newValue,
