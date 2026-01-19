@@ -1,43 +1,43 @@
-import { IntersectAllValidatorInputs, RequiredFetcher } from "@tanstack/react-start";
-import { QueryKey, queryOptions, AnyUseQueryOptions } from "@tanstack/react-query";
-import { Expand } from "@tanstack/react-router";
+import { QueryKey, queryOptions } from "@tanstack/react-query";
 
-type OtherQueryOptions = Omit<AnyUseQueryOptions, "queryKey" | "queryFn" | "meta">;
+type AnyAsyncFn = (...args: any[]) => Promise<any>;
 
-type ServerFnArgs<TServerFn extends RequiredFetcher<any, any, any>> =
-  TServerFn extends RequiredFetcher<any, infer TArgs, any>
-  ? TArgs extends undefined
-  ? []
-  : [Expand<IntersectAllValidatorInputs<any, TArgs>>]
+type ServerFnArgs<TFn extends AnyAsyncFn> = Parameters<TFn>[0] extends infer TRootArgs
+  ? TRootArgs extends { data: infer TResult }
+    ? TResult
+    : undefined
   : never;
 
-export function revalidatedQueryOptionsFinal<T, U>(
-  prefixKey: QueryKey,
-  serverFn: RequiredFetcher<any, T, Promise<U>>,
-  arg: ServerFnArgs<RequiredFetcher<any, T, Promise<U>>>,
-  otherQueryOptions?: OtherQueryOptions
-) {
-  const prefixKeyArr = Array.isArray(prefixKey) ? prefixKey : [prefixKey];
+type ServerFnHasArgs<TFn extends AnyAsyncFn> =
+  ServerFnArgs<TFn> extends infer U ? (U extends undefined ? false : true) : false;
 
-  return queryOptions<U>({
-    ...otherQueryOptions,
-    queryKey: [...prefixKeyArr, ...arg],
-    queryFn: async (): Promise<U> => {
-      if (arg.length === 0) {
-        return serverFn({ data: undefined as any });
-      }
-      return serverFn({ data: arg[0] });
-    },
-    meta: {
-      __revalidate: {
-        serverFn,
-        arg
-      }
-    }
-  });
-}
+type ServerFnWithArgs<TFn extends AnyAsyncFn> = ServerFnHasArgs<TFn> extends true ? TFn : never;
+type ServerFnWithoutArgs<TFn extends AnyAsyncFn> = ServerFnHasArgs<TFn> extends false ? TFn : never;
 
-export function refetchedQueryOptions(queryKey: QueryKey, serverFn: any, arg?: any) {
+type RefetchQueryOptions<T> = {
+  queryKey: QueryKey;
+  queryFn?: (_: any) => Promise<T>;
+  meta?: any;
+};
+
+type ValidateArg<Provided, Expected> = Provided extends Expected
+  ? Provided
+  : "This server function requires an argument!";
+
+export function refetchedQueryOptions<TFn extends AnyAsyncFn>(
+  queryKey: QueryKey,
+  serverFn: ServerFnWithArgs<TFn>,
+  arg: Parameters<TFn>[0]["data"]
+): RefetchQueryOptions<Awaited<ReturnType<TFn>>>;
+export function refetchedQueryOptions<TFn extends AnyAsyncFn>(
+  queryKey: QueryKey,
+  serverFn: ValidateArg<TFn, ServerFnWithoutArgs<TFn>>
+): RefetchQueryOptions<Awaited<ReturnType<TFn>>>;
+export function refetchedQueryOptions<TFn extends (arg: { data: any }) => Promise<any>>(
+  queryKey: QueryKey,
+  serverFn: ServerFnWithoutArgs<TFn> | ServerFnWithArgs<TFn>,
+  arg?: Parameters<TFn>[0]["data"]
+): RefetchQueryOptions<Awaited<ReturnType<TFn>>> {
   const queryKeyToUse = [...queryKey];
   if (arg != null) {
     queryKeyToUse.push(arg);
