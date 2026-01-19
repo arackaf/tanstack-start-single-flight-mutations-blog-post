@@ -1,13 +1,9 @@
-import { createMiddleware, getRouterInstance } from "@tanstack/react-start";
-import { QueryClient } from "@tanstack/react-query";
+import { createMiddleware } from "@tanstack/react-start";
 import { getEpicsList } from "@/serverFn/epics";
 
 export const epicsListRefetchMiddleware = createMiddleware({ type: "function" })
   .client(async ({ next }) => {
-    const router = await getRouterInstance();
 
-    const queryClient: QueryClient = router.options.context.queryClient;
-    const cache = queryClient.getQueryCache();
 
     const result = await next();
 
@@ -15,7 +11,7 @@ export const epicsListRefetchMiddleware = createMiddleware({ type: "function" })
 
     return result;
   })
-  .server(async ({ next, context }) => {
+  .server(async ({ next }) => {
     const result = await next({
       sendContext: {
         payload: {} as any
@@ -24,7 +20,7 @@ export const epicsListRefetchMiddleware = createMiddleware({ type: "function" })
 
     result.sendContext.payload.a = 12;
 
-    const epics = await getEpicsList({ data: 1 });
+    await getEpicsList({ data: 1 });
 
     return result;
   });
