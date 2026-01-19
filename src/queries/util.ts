@@ -6,10 +6,10 @@ type OtherQueryOptions = Omit<AnyUseQueryOptions, "queryKey" | "queryFn" | "meta
 
 type ServerFnArgs<TServerFn extends RequiredFetcher<any, any, any>> =
   TServerFn extends RequiredFetcher<any, infer TArgs, any>
-    ? TArgs extends undefined
-      ? []
-      : [Expand<IntersectAllValidatorInputs<any, TArgs>>]
-    : never;
+  ? TArgs extends undefined
+  ? []
+  : [Expand<IntersectAllValidatorInputs<any, TArgs>>]
+  : never;
 
 export function revalidatedQueryOptionsFinal<T, U>(
   prefixKey: QueryKey,
@@ -37,7 +37,7 @@ export function revalidatedQueryOptionsFinal<T, U>(
   });
 }
 
-export function revalidatedQueryOptions(queryKey: QueryKey, serverFn: any, arg?: any) {
+export function refetchedQueryOptions(queryKey: QueryKey, serverFn: any, arg?: any) {
   const queryKeyToUse = [...queryKey];
   if (arg != null) {
     queryKeyToUse.push(arg);

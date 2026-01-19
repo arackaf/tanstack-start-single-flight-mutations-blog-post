@@ -1,10 +1,10 @@
 import { getEpicsCount, getEpicsList } from "@/serverFn/epics";
-import { revalidatedQueryOptions } from "./util";
+import { refetchedQueryOptions } from "./util";
 import { queryOptions } from "@tanstack/react-query";
 
 export const epicsQueryOptions = (page: number) => {
   return queryOptions({
-    ...revalidatedQueryOptions(["epics", "list"], getEpicsList, page),
+    ...refetchedQueryOptions(["epics", "list"], getEpicsList, page),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5
   });

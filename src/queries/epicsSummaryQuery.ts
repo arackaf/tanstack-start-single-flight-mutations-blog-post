@@ -1,5 +1,5 @@
 import { getEpicsSummary } from "@/serverFn/epics";
-import { revalidatedQueryOptions } from "./util";
+import { refetchedQueryOptions } from "./util";
 import { queryOptions } from "@tanstack/react-query";
 
 export type EpicOverview = {
@@ -9,7 +9,7 @@ export type EpicOverview = {
 
 export const epicsSummaryQueryOptions = () => {
   return queryOptions({
-    ...revalidatedQueryOptions(["epics", "list", "summary"], getEpicsSummary),
+    ...refetchedQueryOptions(["epics", "list", "summary"], getEpicsSummary),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5
   });
