@@ -20,7 +20,7 @@ type RefetchQueryOptions<T> = {
   meta?: any;
 };
 
-type ValidateArg<Provided, Expected> = Provided extends Expected
+type ValidateServerFunction<Provided, Expected> = Provided extends Expected
   ? Provided
   : "This server function requires an argument!";
 
@@ -31,7 +31,7 @@ export function refetchedQueryOptions<TFn extends AnyAsyncFn>(
 ): RefetchQueryOptions<Awaited<ReturnType<TFn>>>;
 export function refetchedQueryOptions<TFn extends AnyAsyncFn>(
   queryKey: QueryKey,
-  serverFn: ValidateArg<TFn, ServerFnWithoutArgs<TFn>>
+  serverFn: ValidateServerFunction<TFn, ServerFnWithoutArgs<TFn>>
 ): RefetchQueryOptions<Awaited<ReturnType<TFn>>>;
 export function refetchedQueryOptions<TFn extends (arg: { data: any }) => Promise<any>>(
   queryKey: QueryKey,
