@@ -177,7 +177,7 @@ const prelimRefetchMiddleware = createMiddleware({ type: "function" })
 
       const entry = cache.find({ queryKey: key, exact: true });
       const isActive = !!entry?.observers?.length;
-      const revalidatePayload: any = entry?.options?.meta?.__revalidate ?? null;
+      const revalidatePayload: any = entry?.meta?.__revalidate ?? null;
 
       if (isActive && revalidatePayload) {
         revalidate.refetch.push({
