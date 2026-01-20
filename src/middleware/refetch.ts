@@ -168,34 +168,24 @@ const prelimRefetchMiddleware = createMiddleware({ type: "function" })
     const revalidate: RevalidationPayload = {
       refetch: []
     };
-    const invalidate: any[] = [];
 
-    const allQueriesFound = refetch.flatMap(key => queryClient.getQueriesData({ queryKey: key, exact: false }));
+    const allQueriesFound = refetch.flatMap(key => cache.findAll({ queryKey: key, exact: false, type: "active" }));
 
-    allQueriesFound.forEach(query => {
-      const key = query[0];
-
-      const entry = cache.find({ queryKey: key, exact: true });
-      const isActive = !!entry?.observers?.length;
+    allQueriesFound.forEach(entry => {
       const revalidatePayload: any = entry?.meta?.__revalidate ?? null;
 
-      if (isActive && revalidatePayload) {
+      if (revalidatePayload) {
         revalidate.refetch.push({
-          key,
+          key: entry.queryKey,
           fn: revalidatePayload.serverFn,
           arg: revalidatePayload.arg
         });
-      } else {
-        invalidate.push(key);
       }
     });
 
     return await next({
       sendContext: {
         revalidate
-      },
-      context: {
-        invalidate
       }
     });
   })
@@ -225,7 +215,7 @@ const prelimRefetchMiddleware = createMiddleware({ type: "function" })
 
 export const refetchMiddleware = createMiddleware({ type: "function" })
   .middleware([prelimRefetchMiddleware])
-  .client(async ({ next }) => {
+  .client(async ({ data, next }) => {
     const result = await next();
 
     const router = await getRouterInstance();
@@ -234,9 +224,10 @@ export const refetchMiddleware = createMiddleware({ type: "function" })
     for (const entry of result.context?.payloads ?? []) {
       queryClient.setQueryData(entry.key, entry.result, { updatedAt: Date.now() });
     }
-    for (const entry of result.context?.invalidate ?? []) {
-      queryClient.invalidateQueries({ queryKey: entry, exact: true });
-    }
+
+    data?.refetch.forEach(key => {
+      queryClient.invalidateQueries({ queryKey: key, exact: false, type: "inactive", refetchType: "none" });
+    });
 
     // give our react-query cache a chance to update
     await new Promise(resolve => setTimeout(resolve, 1));
